@@ -1,0 +1,64 @@
+#!/bin/bash
+dir=`pwd`
+
+function show_help {
+  echo "Add a binary file to PATH"
+  echo "This must be run from the directory where the binary exists"
+  echo "Usage: $0 [options] [filename]"
+  echo "Options:"
+  echo -e "-h\tShow this help"
+}
+
+function yes_no_question () {
+    read -r -p "$1 [Y/n] " response
+    response=${response,,}
+    if [[ "$response" =~ ^(yes|y|)$ ]]; then
+        return 1
+    else
+        return 0
+    fi
+}
+
+if [ -n "$1" ]
+then
+    binary="$1"
+else
+    echo "ERROR: filename must be provided"
+    show_help
+    exit 1
+fi
+
+while getopts "hd" opt; do
+    case "$opt" in
+        h)
+            show_help
+            exit 0
+            ;;
+  esac
+done
+
+echo "Adding '$binary' to PATH..."
+
+if yes_no_question "This will add $binary to PATH, continue?"
+then
+    echo "Cancelling..."
+else
+    echo "Adding '$binary' to PATH..."
+    if [ -h "/usr/bin/$binary" ]
+    then
+        echo -e "\n************"
+        eval "ls -al /usr/bin/$binary"
+        if yes_no_question "$binary link already exists, remove it?"
+        then
+            echo "Exiting, no changes made..."
+            exit 0
+        else
+            echo "Deleting link /usr/bin/$binary..."
+            eval "sudo rm /usr/bin/$binary"
+        fi
+        echo -e "************\n"
+    fi
+    echo "Creating symlink /usr/bin/$binary..."
+    eval "sudo ln -s $dir/$binary /usr/bin/$binary"
+    eval "ls -al /usr/bin/$binary"
+fi
