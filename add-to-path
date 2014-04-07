@@ -13,9 +13,9 @@ function yes_no_question () {
     read -r -p "$1 [Y/n] " response
     response=${response,,}
     if [[ "$response" =~ ^(yes|y|)$ ]]; then
-        return 1
-    else
         return 0
+    else
+        return 1
     fi
 }
 
@@ -41,8 +41,6 @@ echo "Adding '$binary' to PATH..."
 
 if yes_no_question "This will add $binary to PATH, continue?"
 then
-    echo "Cancelling..."
-else
     echo "Adding '$binary' to PATH..."
     if [ -h "/usr/bin/$binary" ]
     then
@@ -50,15 +48,17 @@ else
         eval "ls -al /usr/bin/$binary"
         if yes_no_question "$binary link already exists, remove it?"
         then
-            echo "Exiting, no changes made..."
-            exit 0
-        else
             echo "Deleting link /usr/bin/$binary..."
             eval "sudo rm /usr/bin/$binary"
+        else
+            echo "Exiting, no changes made..."
+            exit 0
         fi
         echo -e "************\n"
     fi
     echo "Creating symlink /usr/bin/$binary..."
     eval "sudo ln -s $dir/$binary /usr/bin/$binary"
     eval "ls -al /usr/bin/$binary"
+else
+    echo "Cancelling..."
 fi
