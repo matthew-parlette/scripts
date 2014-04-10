@@ -73,6 +73,7 @@ sed_command="sed -i s/app=\"bootstrap-docker\"/app=\"$container_name\"/g"
 
 # Confirm the correct dir
 if yes_no_question "This will create a Dockerfile and scripts in $dir, continue?"
+then
     # Copy Template to Directory
     echo -e "Generating new docker directory in $dir..."
     eval "cp $script_dir/bootstrap/docker/Dockerfile $dir"
