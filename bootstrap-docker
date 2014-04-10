@@ -1,0 +1,100 @@
+#!/bin/bash
+
+# Configuration
+###############
+dir=`pwd`
+
+# Functions
+###########
+function show_help {
+    echo "Create a new docker configuration from a template"
+    echo "Usage: $0 [options] [container-name]"
+    echo "Options:"
+    echo -e "-h\tShow this help"
+}
+
+# Ask a question, defaults to yes
+function yes_no_question () {
+    read -r -p "$1 [Y/n] " response
+    response=${response,,}
+    if [[ "$response" =~ ^(yes|y|)$ ]]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+# Ask a question, defaults to no
+function no_yes_question () {
+    read -r -p "$1 [Y/n] " response
+    response=${response,,}
+    if [[ "$response" =~ ^(no|n|)$ ]]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+# Useful Variables
+##################
+# Directory containing this script
+#  (no matter where it is called from)
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
+  DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+  SOURCE="$(readlink "$SOURCE")"
+  [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
+done
+script_dir="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+
+# Script
+########
+container_name="$1"
+
+# Read Command Line Arguments
+while getopts "h" opt; do
+    case "$opt" in
+        h)
+            show_help
+            exit 0
+            ;;
+  esac
+done
+
+# Verify Parameters
+if [ -z "$container_name" ]
+then
+    echo -e "Name for the container:"
+    read container_name
+fi
+
+# Setup the replace command for the scripts
+sed_command="sed -i s/app=\"bootstrap-docker\"/app=\"$container_name\"/g"
+
+# Confirm the correct dir
+if yes_no_question "This will create a Dockerfile and scripts in $dir, continue?"
+    # Copy Template to Directory
+    echo -e "Generating new docker directory in $dir..."
+    eval "cp $script_dir/bootstrap/docker/Dockerfile $dir"
+    eval "cp $script_dir/bootstrap/docker/README.md $dir"
+
+    eval "cp $script_dir/bootstrap/docker/build $dir"
+    eval "cp $script_dir/bootstrap/docker/daemon $dir"
+    eval "cp $script_dir/bootstrap/docker/run $dir"
+    eval "cp $script_dir/bootstrap/docker/shell $dir"
+    eval "sed_command $dir/build"
+    eval "sed_command $dir/daemon"
+    eval "sed_command $dir/run"
+    eval "sed_command $dir/shell"
+
+    eval "mkdir $dir/scripts"
+    eval "cp $script_dir/bootstrap/docker/scripts/setup $dir/scripts"
+    eval "cp $script_dir/bootstrap/docker/scripts/start $dir/scripts"
+
+    # Make sure files are executable
+    eval "chmod +x build daemon run shell scripts/setup scripts/start"
+
+    echo -e "Docker is ready to go. Modify the Dockerfile before running build."
+else
+    exit 0
+fi

@@ -1,0 +1,13 @@
+#!/bin/bash
+# set the name of the app
+# this will be used to tag the container
+app="bootstrap-docker"
+
+# space separated list of ports to forward
+ports="-p host:container"
+
+# volumes to include in this container
+volumes="-v `pwd`/data:/data:rw"
+
+# run the container (shell)
+eval "docker run -i -t $ports $volumes $app /bin/bash"

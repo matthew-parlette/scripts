@@ -1,0 +1,9 @@
+#!/bin/bash
+# Define any steps that are a part of the run process
+# Steps here will be executed each time the container is started
+
+# Example Rails start script
+# cd /rails
+# RAILS_ENV=production ./bin/rake db:migrate
+# RAILS_ENV=production ./bin/rake assets:precompile
+# RAILS_ENV=production ./bin/rails server $* -p 3000

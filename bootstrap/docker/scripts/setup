@@ -1,0 +1,11 @@
+#!/bin/bash
+# Define any setup steps that are a part of the build process
+# Steps here will be cached by docker as long as this file stays
+#   the same.
+set -e
+
+# Example Rails setup script
+# cd /rails
+# bundle config path "/rails/bundler"
+# bundle install
+# sed -i 's/db\/production.sqlite3/\/data\/production.sqlite3/g' /rails/config/database.yml

@@ -1,0 +1,23 @@
+#!/bin/bash
+# set the name of the app
+# this will be used to tag the container
+app="bootstrap-docker"
+
+# load code from github
+# git clone https://github.com/matthew-parlette/crdb.git
+# if git returns 128, then the directory already exists
+# if [ "$?" -eq "128" ]; then
+#   echo "loading latest version of $app"
+#   eval "cd $app;git pull;cd .."
+# fi
+
+# set app permissions
+# eval "chmod 777 $app"
+
+# make sure we have a data directory
+if [ ! -d "data" ]; then
+  eval "mkdir data"
+fi
+
+# build the container
+eval "docker build -t $app ."
