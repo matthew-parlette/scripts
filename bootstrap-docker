@@ -69,7 +69,7 @@ then
 fi
 
 # Setup the replace command for the scripts
-sed_command="sed -i s/app=\"bootstrap-docker\"/app=\"$container_name\"/g"
+sed_command="sed -i 's/app=\"bootstrap-docker\"/app=\"$container_name\"/g'"
 
 # Confirm the correct dir
 if yes_no_question "This will create a Dockerfile and scripts in $dir, continue?"
@@ -83,10 +83,10 @@ then
     eval "cp $script_dir/bootstrap/docker/daemon $dir"
     eval "cp $script_dir/bootstrap/docker/run $dir"
     eval "cp $script_dir/bootstrap/docker/shell $dir"
-    eval "sed_command $dir/build"
-    eval "sed_command $dir/daemon"
-    eval "sed_command $dir/run"
-    eval "sed_command $dir/shell"
+    eval "$sed_command $dir/build"
+    eval "$sed_command $dir/daemon"
+    eval "$sed_command $dir/run"
+    eval "$sed_command $dir/shell"
 
     eval "mkdir $dir/scripts"
     eval "cp $script_dir/bootstrap/docker/scripts/setup $dir/scripts"
