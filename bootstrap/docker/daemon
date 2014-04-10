@@ -4,10 +4,12 @@
 app="bootstrap-docker"
 
 # space separated list of ports to forward
-ports="-p host:container"
+# ports="-p host:container"
+ports=""
 
 # volumes to include in this container
-volumes="-v `pwd`/data:/data:rw"
+# volumes="-v `pwd`/data:/data:rw"
+volumes=""
 
 # run the container (daemon)
 eval "docker run -d $ports $volumes $app"
