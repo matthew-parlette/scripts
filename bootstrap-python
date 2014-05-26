@@ -7,7 +7,7 @@
 # Functions
 ###########
 function show_help {
-    echo "Create a new bash script from a template"
+    echo "Create a new python file from a template"
     echo "Usage: $0 [options] [filename]"
     echo "Options:"
     echo -e "-h\tShow this help"
@@ -64,11 +64,11 @@ done
 # Verify Parameters
 if [ -z "$new_script_name" ]
 then
-    echo -e "Path for new script:"
+    echo -e "Path for new file:"
     read new_script_name
 fi
 
 # Copy Template to New File
-echo -e "Generating new script in $new_script_name..."
-eval "cp $script_dir/bootstrap/bash $new_script_name"
+echo -e "Generating new .py file in $new_script_name..."
+eval "cp $script_dir/bootstrap/python $new_script_name"
 eval "chmod +x $new_script_name"
