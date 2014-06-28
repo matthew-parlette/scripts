@@ -15,7 +15,7 @@ if __name__ == "__main__":
   log_level = logging.DEBUG if args.debug else logging.INFO
   log = logging.getLogger(os.path.basename(__file__))
   log.setLevel(log_level)
-  formatter = logging.Formatter('%(asctime)s:%(name)s:%(levelname)s:%(message)s')
+  formatter = logging.Formatter('%(asctime)s:%(name)s:%(levelname)s:%(funcName)s(%(lineno)i):%(message)s')
 
   ## Console Logging
   ch = logging.StreamHandler()
