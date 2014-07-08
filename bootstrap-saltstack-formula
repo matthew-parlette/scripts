@@ -1,0 +1,105 @@
+#!/bin/bash
+
+# Configuration
+###############
+
+
+# Functions
+###########
+function show_help {
+    echo "Help Text"
+    echo "Usage: $0 [options]"
+    echo "Options:"
+    echo -e "-h\tShow this help"
+}
+
+# Ask a question, defaults to yes
+function yes_no_question () {
+    read -r -p "$1 [Y/n] " response
+    response=${response,,}
+    if [[ "$response" =~ ^(yes|y|)$ ]]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+# Ask a question, defaults to no
+function no_yes_question () {
+    read -r -p "$1 [Y/n] " response
+    response=${response,,}
+    if [[ "$response" =~ ^(no|n|)$ ]]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+# Useful Variables
+##################
+# Directory containing this script
+#  (no matter where it is called from)
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
+  DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+  SOURCE="$(readlink "$SOURCE")"
+  [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
+done
+script_dir="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+
+# Script
+########
+dest_path="$1"
+
+# Read Command Line Arguments
+while getopts "h" opt; do
+    case "$opt" in
+        h)
+            show_help
+            exit 0
+            ;;
+  esac
+done
+
+# Verify Parameters
+if [ -z "$dest_path" ]
+then
+    echo -e "Path for new script:"
+    read dest_path
+fi
+
+if [ -d "$dest_path" ]
+then
+    echo -e "Path already exists, exiting"
+    exit 1
+fi
+
+if yes_no_question "This will copy the saltstack-formula template into $dest_path, continue?"
+then
+    eval "mkdir $dest_path"
+    # Clone saltstack-template repo
+    if [ -d "/tmp/template-formula" ]
+    then
+        rm -rf /tmp/template-formula
+    fi
+    echo "Cloning saltstack-template repo..."
+    eval "git clone https://github.com/saltstack-formulas/template-formula.git /tmp/template-formula"
+
+    # Copy files to destination path
+    echo "Copying files to $dest_path..."
+    eval "cp -r /tmp/template-formula/* $dest_path"
+
+    # Initilize the repo
+    echo "Initializing repository..."
+    eval "git init $dest_path"
+
+    # First commit (easier to do from the dest_path dir)
+    echo "Creating initial commit..."
+    exec_dir=`pwd`
+    eval "cd $dest_path"
+    eval "git add ."
+    eval "git commit -am 'Initial commit copied from template'"
+    eval "cd $exec_dir"
+else
+    echo "Cancelling..."
+fi
