@@ -5,6 +5,23 @@ import logging
 import os
 import yaml
 
+global config
+
+def merge(x,y):
+    # store a copy of x, but overwrite with y's values where applicable
+    merged = dict(x,**y)
+
+    xkeys = x.keys()
+
+    # if the value of merged[key] was overwritten with y[key]'s value
+    # then we need to put back any missing x[key] values
+    for key in xkeys:
+        # if this key is a dictionary, recurse
+        if isinstance(x[key],dict) and y.has_key(key):
+            merged[key] = merge(x[key],y[key])
+
+    return merged
+
 if __name__ == "__main__":
     # Parse command line arguments
     parser = argparse.ArgumentParser(description='Process command line options.')
@@ -34,24 +51,30 @@ if __name__ == "__main__":
 
     log.info("Initializing...")
 
+    log.info("Loading configuration...")
     # Load Config
+    global config
     defaults = {
-        "setting": "value",
+        # "setting": "value",
     }
     if os.path.isfile(args.config):
         log.debug("Loading config file %s" % args.config)
         config = yaml.load(file(args.config))
         if config:
             # config contains items
-            config = dict(defaults.items() + yaml.load(file(args.config)).items())
+            config = merge(defaults,yaml.load(file(args.config)))
+            log.debug("Config merged with defaults")
         else:
             # config is empty, just use defaults
             config = defaults
+            log.debug("Config file was empty, loaded config from defaults")
     else:
         log.debug("Config file does not exist, creating a default config...")
-        with open(args.config, 'w') as outfile:
-            outfile.write( yaml.dump(defaults, default_flow_style=False) )
         config = defaults
+
+    log.debug("Config loaded as:\n%s, saving this to disk" % str(config))
+    with open(args.config, 'w') as outfile:
+        outfile.write( yaml.dump(config, default_flow_style=False) )
     log.debug("Config loaded as:\n%s" % str(config))
 
     log.info("Initialization complete")
