@@ -1,0 +1,122 @@
+#!/bin/bash
+
+# Configuration
+###############
+
+
+# Functions
+###########
+function show_help {
+    echo "Help Text"
+    echo "Usage: $0 [options]"
+    echo "Options:"
+    echo -e "-h\tShow this help"
+    echo -e "-o\tSet output device (requires 'speakers' or 'headphones')"
+    # echo -e "-s\tSet output to speakers"
+}
+
+# Ask a question, defaults to yes
+function yes_no_question () {
+    read -r -p "$1 [Y/n] " response
+    response=${response,,}
+    if [[ "$response" =~ ^(yes|y|)$ ]]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+# Ask a question, defaults to no
+function no_yes_question () {
+    read -r -p "$1 [Y/n] " response
+    response=${response,,}
+    if [[ "$response" =~ ^(no|n|)$ ]]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+function volume () {
+    # get current sink
+    sink=`pactl list short sinks | grep RUNNING | cut -f1`
+    step="10"
+    if [[ "$1" =~ ^(up|u)$ ]]; then
+        cmd="pactl set-sink-volume $sink -- +$step%"
+    fi
+    if [[ "$1" =~ ^(down|d)$ ]]; then
+        cmd="pactl set-sink-volume $sink -- -$step%"
+    fi
+    if [[ "$1" =~ ^(mute|m)$ ]]; then
+        cmd="pactl set-sink-mute $sink toggle"
+    fi
+    echo "Running command '$cmd'..."
+    eval "$cmd"
+}
+
+function output () {
+    sink=`pactl list short sinks | grep $1 | cut -f1`
+    echo "Setting default sink to `pactl list short sinks | grep $1`...";
+    pacmd set-default-sink $1
+    echo "Moving current inputs to default sink..."
+    pacmd list-sink-inputs | grep index | while read line
+    do
+        echo "Moving input: ";
+        echo $line | cut -f2 -d' ';
+        echo "to sink: $1";
+        pacmd move-sink-input `echo $line | cut -f2 -d' '` $1
+    done
+}
+
+# Useful Variables
+##################
+# Directory containing this script
+#  (no matter where it is called from)
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
+  DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+  SOURCE="$(readlink "$SOURCE")"
+  [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
+done
+script_dir="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+
+# Script
+########
+
+# Read Command Line Arguments
+while getopts "ho:" opt; do
+    case "$opt" in
+        h)
+            show_help
+            exit 0
+            ;;
+        o)
+            output=$OPTARG
+            if [[ $output =~ ^(s|speakers)$ ]]; then
+                output "alsa_output.pci-0000_00_1b.0.analog-stereo"
+            fi
+            if [[ $output =~ ^(h|headphones)$ ]]; then
+                # set output for analog, then digital in case one isn't present
+                output "alsa_output.usb-Logitech_Logitech_G930_Headset-00-Headset.analog-stereo"
+                output "alsa_output.usb-Logitech_Logitech_G930_Headset-00-Headset.iec958-stereo"
+            fi
+            ;;
+        # s)
+            # output "alsa_output.pci-0000_00_1b.0.analog-stereo"
+        # h)
+            # set output for analog, then digital in case one isn't present
+            # output "alsa_output.usb-Logitech_Logitech_G930_Headset-00-Headset.analog-stereo"
+            # output "alsa_output.usb-Logitech_Logitech_G930_Headset-00-Headset.iec958-stereo"
+  esac
+done
+
+# Read audio command
+shift $((OPTIND-1))
+while [ $# -ne 0 ]; do
+    command=$1
+    echo "Executing audio command '$command'..."
+    if [[ "$command" =~ ^(up|u|down|d|mute|m)$ ]]; then
+        volume $command
+    fi
+    shift
+done
