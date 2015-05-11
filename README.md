@@ -18,3 +18,12 @@ Generate a multi-file python program in the current directory with:
 * plugin framework
 
     $ bootstrap-python -p myscript.py
+
+## *-screen-blank
+
+These two scripts will enable or disable the screen blanking in X. This is used in i3 or on the Raspberry Pi.
+
+```
+$ disable-screen-blank  # Screen is always on
+$ enable-screen-blank  # Screen will blank after a timeout
+```
