@@ -49,17 +49,23 @@ script_dir="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
 # Script
 ########
-new_script_name="$1"
+use_plugin_framework=false
 
 # Read Command Line Arguments
-while getopts "h" opt; do
+while getopts "hp" opt; do
     case "$opt" in
         h)
             show_help
             exit 0
             ;;
+        p)
+            use_plugin_framework=true
+            ;;
   esac
 done
+# Shift the arguments so $1 refers to the script name
+shift $(expr $OPTIND - 1 )
+new_script_name="$1"
 
 # Verify Parameters
 if [ -z "$new_script_name" ]
@@ -68,7 +74,15 @@ then
     read new_script_name
 fi
 
-# Copy Template to New File
-echo -e "Generating new .py file in $new_script_name..."
-eval "cp $script_dir/bootstrap/python $new_script_name"
-eval "chmod +x $new_script_name"
+if [ "$use_plugin_framework" = true ]; then
+    # Copy plugin framework files
+    echo -e "Generating new .py file with plugin framework in $new_script_name..."
+    eval "cp -r $script_dir/bootstrap/python-plugins/* ."
+    eval "mv program.py $new_script_name"
+    eval "chmod +x $new_script_name"
+else
+    # Copy Template to New File
+    echo -e "Generating new .py file in $new_script_name..."
+    eval "cp $script_dir/bootstrap/python $new_script_name"
+    eval "chmod +x $new_script_name"
+fi
