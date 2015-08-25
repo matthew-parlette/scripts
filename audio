@@ -57,14 +57,14 @@ function volume () {
 function output () {
     sink=`pactl list short sinks | grep $1 | cut -f1`
     echo "Setting default sink to `pactl list short sinks | grep $1`...";
-    pacmd set-default-sink $1
+    pactl set-default-sink $1
     echo "Moving current inputs to default sink..."
-    pacmd list-sink-inputs | grep index | while read line
+    pactl list-sink-inputs | grep index | while read line
     do
         echo "Moving input: ";
         echo $line | cut -f2 -d' ';
         echo "to sink: $1";
-        pacmd move-sink-input `echo $line | cut -f2 -d' '` $1
+        pactl move-sink-input `echo $line | cut -f1 -d' '` $1
     done
 }
 
