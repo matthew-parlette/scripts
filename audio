@@ -59,12 +59,12 @@ function output () {
     echo "Setting default sink to `pactl list short sinks | grep $1`...";
     pactl set-default-sink $1
     echo "Moving current inputs to default sink..."
-    pactl list-sink-inputs | grep index | while read line
+    pactl list short sink-inputs | while read line
     do
         echo "Moving input: ";
-        echo $line | cut -f2 -d' ';
+        echo $line | cut -f1 -d' ';
         echo "to sink: $1";
-        pactl move-sink-input `echo $line | cut -f1 -d' '` $1
+        pactl move-sink-input `echo $line | cut -f1 -d' '` "$1"
     done
 }
 
@@ -93,12 +93,13 @@ while getopts "ho:" opt; do
         o)
             output=$OPTARG
             if [[ $output =~ ^(s|speakers)$ ]]; then
-                output "alsa_output.pci-0000_00_1b.0.analog-stereo"
+                output `pactl list short sinks | awk '/pci.*analog-stereo/ {print $2}'`
             fi
             if [[ $output =~ ^(h|headphones)$ ]]; then
                 # set output for analog, then digital in case one isn't present
-                output "alsa_output.usb-Logitech_Logitech_G930_Headset-00-Headset.analog-stereo"
-                output "alsa_output.usb-Logitech_Logitech_G930_Headset-00-Headset.iec958-stereo"
+                output `pactl list short sinks | awk '/usb.*Logitech/ {print $2}'`
+                # output "alsa_output.usb-Logitech_Logitech_G930_Headset-00-Headset.analog-stereo"
+                # output "alsa_output.usb-Logitech_Logitech_G930_Headset-00-Headset.iec958-stereo"
             fi
             ;;
         # s)
