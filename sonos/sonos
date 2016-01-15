@@ -21,7 +21,7 @@ zone = None
 
 # Uncomment the following to discover zones
 for discovered in zones:
-    print str(discovered.get_favorite_radio_stations())
+    # print str(discovered.get_favorite_radio_stations())
     if discovered.player_name == args.zone:
         zone = discovered
 
