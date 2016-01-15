@@ -1,0 +1,47 @@
+#!/usr/bin/env python
+import datetime
+import argparse
+import urllib2
+import re
+import time
+from subprocess import call
+
+today = datetime.date.today()
+
+parser = argparse.ArgumentParser(description='Find a czaban podcast'
+                                 ' and play it on sonos. If the podcast'
+                                 ' is not found, it will keep trying'
+                                 ' until it is found and play it')
+parser.add_argument('--hour', type=int, default=1,
+                    help='Show hour to play')
+parser.add_argument('--date', default=today.strftime("%-m-%-d-%Y"),
+                    help='Date to search for, in format %-m-%-d-%Y')
+parser.add_argument('--retry-delay', default=5,
+                    help='Time in minutes to wait if podcast is not found')
+parser.add_argument('--sonos-command', default='play',
+                    help='Command to send to sonos when podcast is found')
+parser.add_argument('--exit-if-not-found', action='store_true',
+                    help='If the podcast is not found on the site,'
+                    ' then exit immediately')
+args = parser.parse_args()
+
+url = None
+
+while not (url or args.exit_if_not_found):
+    response = urllib2.urlopen('http://www.podcastarena.com/czaban/')
+    html = response.read()
+
+    match = re.search("https://audioboom.com/boos/"
+                      ".*-{}-czaban-hour-{}.mp3".format(
+                          args.date,
+                          args.hour),
+                      html)
+    if match and match.group(0):
+        url = match.group(0)
+    else:
+        print "Hour {} not found, waiting to retry...".format(
+            args.hour)
+        time.sleep(args.retry_delay * 60)
+
+print "Found hour {}, playing...".format(args.hour)
+call(["sonos", args.sonos_command, url])
