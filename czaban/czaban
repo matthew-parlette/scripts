@@ -14,8 +14,11 @@ parser = argparse.ArgumentParser(description='Find a czaban podcast'
                                  ' until it is found and play it')
 parser.add_argument('--hour', type=int, default=1,
                     help='Show hour to play')
-parser.add_argument('--date', default=today.strftime("%-m-%-d-%Y"),
-                    help='Date to search for, in format %-m-%-d-%Y')
+parser.add_argument('--date', default=today.strftime("%m-%d-%y"),
+                    help='Date to search for, in format %m-%d-%y')
+parser.add_argument('--url', default='https://audioboom.com/'
+                    'channel/steveczabanyahoosportsradio',
+                    help='URL to search for czaban podcasts')
 parser.add_argument('--retry-delay', default=5,
                     help='Time in minutes to wait if podcast is not found')
 parser.add_argument('--sonos-command', default='play',
@@ -23,25 +26,32 @@ parser.add_argument('--sonos-command', default='play',
 parser.add_argument('--exit-if-not-found', action='store_true',
                     help='If the podcast is not found on the site,'
                     ' then exit immediately')
+parser.add_argument('-d', '--debug', action='store_true',
+                    help='Print debug output')
 args = parser.parse_args()
+if args.debug:
+    print "Args loaded as {}".format(str(args))
 
 url = None
 
 while not (url or args.exit_if_not_found):
-    response = urllib2.urlopen('http://www.podcastarena.com/czaban/')
+    response = urllib2.urlopen(args.url)
     html = response.read()
 
+    # https://audioboom.com/boos/4074918-01-18-16-czaban-hour-2
     match = re.search("https://audioboom.com/boos/"
-                      ".*-{}-czaban-hour-{}.mp3".format(
+                      ".*-{}-czaban-hour-{}".format(
                           args.date,
                           args.hour),
                       html)
     if match and match.group(0):
         url = match.group(0)
+        if args.debug:
+            print "Found URL of {}".format(url)
     else:
         print "Hour {} not found, waiting to retry...".format(
             args.hour)
         time.sleep(args.retry_delay * 60)
 
 print "Found hour {}, playing...".format(args.hour)
-call(["sonos", args.sonos_command, url])
+call(["sonos", args.sonos_command, "{}.mp3".format(url)])
