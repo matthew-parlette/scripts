@@ -7,9 +7,12 @@ import yaml
 
 global config
 
-def merge(x,y):
-    # store a copy of x, but overwrite with y's values where applicable
-    merged = dict(x,**y)
+
+def merge(x, y):
+    """
+    store a copy of x, but overwrite with y's values where applicable
+    """
+    merged = dict(x, **y)
 
     xkeys = x.keys()
 
@@ -17,17 +20,20 @@ def merge(x,y):
     # then we need to put back any missing x[key] values
     for key in xkeys:
         # if this key is a dictionary, recurse
-        if isinstance(x[key],dict) and y.has_key(key):
-            merged[key] = merge(x[key],y[key])
+        if isinstance(x[key], dict) and key in y:
+            merged[key] = merge(x[key], y[key])
 
     return merged
 
 if __name__ == "__main__":
     # Parse command line arguments
-    parser = argparse.ArgumentParser(description='Process command line options.')
-    parser.add_argument('-d','--debug', action='store_true', help='Enable debug logging')
-    parser.add_argument('-c','--config', help='Specify a config file to use',
-                        type=str, default='config.yaml')
+    parser = argparse.ArgumentParser(
+        description='Process command line options.')
+    parser.add_argument(
+        '-d', '--debug', action='store_true', help='Enable debug logging')
+    parser.add_argument(
+        '-c', '--config', help='Specify a config file to use',
+        type=str, default='config.yaml')
     parser.add_argument('--version', action='version', version='0')
     args = parser.parse_args()
 
@@ -35,15 +41,16 @@ if __name__ == "__main__":
     log_level = logging.DEBUG if args.debug else logging.INFO
     log = logging.getLogger(os.path.basename(__file__))
     log.setLevel(log_level)
-    formatter = logging.Formatter('%(asctime)s:%(name)s:%(levelname)s:%(funcName)s(%(lineno)i):%(message)s')
+    formatter = logging.Formatter('%(asctime)s:%(name)s:%(levelname)s'
+                                  ':%(funcName)s(%(lineno)i):%(message)s')
 
-    ## Console Logging
+    # Console Logging
     ch = logging.StreamHandler()
     ch.setLevel(log_level)
     ch.setFormatter(formatter)
     log.addHandler(ch)
 
-    ## File Logging
+    # File Logging
     fh = logging.FileHandler(os.path.basename(__file__) + '.log')
     fh.setLevel(log_level)
     fh.setFormatter(formatter)
@@ -62,7 +69,7 @@ if __name__ == "__main__":
         config = yaml.load(file(args.config))
         if config:
             # config contains items
-            config = merge(defaults,yaml.load(file(args.config)))
+            config = merge(defaults, yaml.load(file(args.config)))
             log.debug("Config merged with defaults")
         else:
             # config is empty, just use defaults
@@ -74,7 +81,7 @@ if __name__ == "__main__":
 
     log.debug("Config loaded as:\n%s, saving this to disk" % str(config))
     with open(args.config, 'w') as outfile:
-        outfile.write( yaml.dump(config, default_flow_style=False) )
+        outfile.write(yaml.dump(config, default_flow_style=False))
     log.debug("Config loaded as:\n%s" % str(config))
 
     log.info("Initialization complete")
