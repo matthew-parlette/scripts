@@ -14,8 +14,8 @@ parser = argparse.ArgumentParser(description='Find a czaban podcast'
                                  ' until it is found and play it')
 parser.add_argument('--hour', type=int, default=1,
                     help='Show hour to play')
-parser.add_argument('--date', default=today.strftime("%m-%d-%y"),
-                    help='Date to search for, in format %m-%d-%y')
+parser.add_argument('--date', default=today.strftime("%-m-%-d-%Y"),
+                    help='Date to search for, in format %-m-%-d-%Y')
 parser.add_argument('--url', default='https://audioboom.com/'
                     'channel/steveczabanyahoosportsradio',
                     help='URL to search for czaban podcasts')
@@ -38,7 +38,7 @@ while not (url or args.exit_if_not_found):
     response = urllib2.urlopen(args.url)
     html = response.read()
 
-    # https://audioboom.com/boos/4074918-01-18-16-czaban-hour-2
+    # https://audioboom.com/boos/4078524-1-19-2016-czaban-hour-1
     match = re.search("https://audioboom.com/boos/"
                       ".*-{}-czaban-hour-{}".format(
                           args.date,
@@ -51,6 +51,10 @@ while not (url or args.exit_if_not_found):
     else:
         print "Hour {} not found, waiting to retry...".format(
             args.hour)
+        if args.debug:
+            for line in html:
+                if "czaban-hour" in line:
+                    print "Line found: {}".format(line)
         time.sleep(args.retry_delay * 60)
 
 print "Found hour {}, playing...".format(args.hour)
