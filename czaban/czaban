@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 import datetime
 import argparse
+import logging
+import os
 import urllib2
 import re
 import time
@@ -29,8 +31,27 @@ parser.add_argument('--exit-if-not-found', action='store_true',
 parser.add_argument('-d', '--debug', action='store_true',
                     help='Print debug output')
 args = parser.parse_args()
-if args.debug:
-    print "Args loaded as {}".format(str(args))
+
+# Setup logging options
+log_level = logging.DEBUG if args.debug else logging.INFO
+log = logging.getLogger(os.path.basename(__file__))
+log.setLevel(log_level)
+formatter = logging.Formatter('%(asctime)s:%(name)s:%(levelname)s'
+                              ':%(funcName)s(%(lineno)i):%(message)s')
+
+# Console Logging
+ch = logging.StreamHandler()
+ch.setLevel(log_level)
+ch.setFormatter(formatter)
+log.addHandler(ch)
+
+# File Logging
+fh = logging.FileHandler(os.path.basename(__file__) + '.log')
+fh.setLevel(log_level)
+fh.setFormatter(formatter)
+log.addHandler(fh)
+
+log.debug("Args loaded as {}".format(str(args)))
 
 url = None
 
@@ -46,16 +67,15 @@ while not (url or args.exit_if_not_found):
                       html)
     if match and match.group(0):
         url = match.group(0)
-        if args.debug:
-            print "Found URL of {}".format(url)
+        log.debug("Found URL of {}".format(url))
     else:
-        print "Hour {} not found, waiting to retry...".format(
-            args.hour)
+        log.warning("Hour {} not found, waiting to retry...".format(
+                    args.hour))
         if args.debug:
             for line in html:
                 if "czaban-hour" in line:
-                    print "Line found: {}".format(line)
+                    log.debug("Line found: {}".format(line))
         time.sleep(args.retry_delay * 60)
 
-print "Found hour {}, playing...".format(args.hour)
+log.info("Found hour {}, playing...".format(args.hour))
 call(["sonos", args.sonos_command, "{}.mp3".format(url)])
