@@ -5,7 +5,9 @@ import argparse
 import sys
 
 parser = argparse.ArgumentParser(description='Send commands to a sonos zone')
-parser.add_argument('command', nargs='+', help='Command to send')
+parser.add_argument('command', nargs='+',
+                    help="Command to send\n"
+                    "(play, pause, commercial, queue, volume)")
 parser.add_argument('-z', '--zone', default='Basement',
                     help='Zone name to send command (Default: Basement)')
 parser.add_argument('--commercial-time', type=int, default=5,
@@ -13,6 +15,8 @@ parser.add_argument('--commercial-time', type=int, default=5,
                     ' a commercial break (Default 5)')
 parser.add_argument('--clear', type=bool, default=False,
                     help='Clear queue before performing command')
+parser.add_argument('--volume-step', type=int, default=5,
+                    help='Percentage to use for volume step')
 args = parser.parse_args()
 
 zones = list(discover())
@@ -28,8 +32,6 @@ for discovered in zones:
 if not zone:
     print "No zone found, exiting..."
     sys.exit(1)
-
-print args.command
 
 if args.clear:
     zone.clear_queue()
@@ -54,3 +56,16 @@ if args.command[0] == 'commercial':
     zone.pause()
     time.sleep(args.commercial_time * 60)
     zone.play()
+
+if args.command[0] == 'volume':
+    if len(args.command) == 1:
+        print zone.volume
+    else:
+        if args.command[1] == 'up':
+            zone.volume = zone.volume + args.volume_step
+            print "Volume set up {}% to {}%".format(
+                str(args.volume_step), str(zone.volume))
+        if args.command[1] == 'down':
+            zone.volume = zone.volume - args.volume_step
+            print "Volume set up {}% to {}%".format(
+                str(args.volume_step), str(zone.volume))
