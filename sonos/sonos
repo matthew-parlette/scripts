@@ -7,7 +7,7 @@ import sys
 parser = argparse.ArgumentParser(description='Send commands to a sonos zone')
 parser.add_argument('command', nargs='+',
                     help="Command to send\n"
-                    "(play, pause, commercial, queue, volume)")
+                    "(play, pause, commercial, queue, volume, link)")
 parser.add_argument('-z', '--zone', default='Basement',
                     help='Zone name to send command (Default: Basement)')
 parser.add_argument('--commercial-time', type=int, default=5,
@@ -69,3 +69,8 @@ if args.command[0] == 'volume':
             zone.volume = zone.volume - args.volume_step
             print "Volume set up {}% to {}%".format(
                 str(args.volume_step), str(zone.volume))
+
+if args.command[0] == 'link':
+    # Link all zones to this one
+    # print "Zones: {}".format(', '.join(zone._visible_zones))
+    zone.partymode()

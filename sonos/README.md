@@ -6,3 +6,7 @@ Installation
 Usage
 =====
 
+Link all zones to the selected zone
+-----------------------------------
+
+    $ sonos -z Basement link
