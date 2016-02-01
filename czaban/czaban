@@ -16,8 +16,8 @@ parser = argparse.ArgumentParser(description='Find a czaban podcast'
                                  ' until it is found and play it')
 parser.add_argument('--hour', type=int, default=1,
                     help='Show hour to play')
-parser.add_argument('--date', default=today.strftime("%-m-%-d-%Y"),
-                    help='Date to search for, in format %-m-%-d-%Y')
+parser.add_argument('--date', default=today.strftime("%-m-%d-%Y"),
+                    help='Date to search for, in format %-m-%d-%Y')
 parser.add_argument('--url', default='https://audioboom.com/'
                     'channel/steveczabanyahoosportsradio',
                     help='URL to search for czaban podcasts')
