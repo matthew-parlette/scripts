@@ -1,0 +1,340 @@
+2016-01-24 15:49:55,829:handle-dash-press:INFO:<module>(81):Initializing...
+2016-01-24 15:49:55,830:handle-dash-press:INFO:<module>(83):Loading configuration...
+2016-01-24 15:49:55,833:handle-dash-press:INFO:<module>(114):Initialization complete
+2016-01-24 15:50:52,952:handle-dash-press:INFO:<module>(81):Initializing...
+2016-01-24 15:50:52,952:handle-dash-press:INFO:<module>(83):Loading configuration...
+2016-01-24 15:50:52,956:handle-dash-press:INFO:<module>(114):Initialization complete
+2016-01-24 15:50:59,023:handle-dash-press:INFO:handle_arp(45):Received button press from 'amazon elements'
+2016-01-24 15:51:06,736:handle-dash-press:INFO:<module>(81):Initializing...
+2016-01-24 15:51:06,736:handle-dash-press:INFO:<module>(83):Loading configuration...
+2016-01-24 15:51:06,736:handle-dash-press:DEBUG:<module>(95):Loading config file config.yaml
+2016-01-24 15:51:06,739:handle-dash-press:DEBUG:<module>(100):Config merged with defaults
+2016-01-24 15:51:06,739:handle-dash-press:DEBUG:<module>(109):Config loaded as:
+{'dash': {'74:c2:46:6a:fd:85': 'amazon elements', 'f0:27:2d:51:59:a2': True}, 'link': {}}, saving this to disk
+2016-01-24 15:51:06,740:handle-dash-press:DEBUG:<module>(112):Config loaded as:
+{'dash': {'74:c2:46:6a:fd:85': 'amazon elements', 'f0:27:2d:51:59:a2': True}, 'link': {}}
+2016-01-24 15:51:06,740:handle-dash-press:INFO:<module>(114):Initialization complete
+2016-01-24 15:51:46,948:handle-dash-press:INFO:handle_arp(45):Received button press from 'True'
+2016-01-24 15:53:02,279:handle-dash-press:INFO:<module>(82):Initializing...
+2016-01-24 15:53:02,280:handle-dash-press:INFO:<module>(84):Loading configuration...
+2016-01-24 15:53:02,280:handle-dash-press:DEBUG:<module>(96):Loading config file config.yaml
+2016-01-24 15:53:02,282:handle-dash-press:DEBUG:<module>(101):Config merged with defaults
+2016-01-24 15:53:02,283:handle-dash-press:DEBUG:<module>(110):Config loaded as:
+{'dash': {'74:c2:46:6a:fd:85': 'amazon elements', 'f0:27:2d:51:59:a2': True}, 'link': {}}, saving this to disk
+2016-01-24 15:53:02,284:handle-dash-press:DEBUG:<module>(113):Config loaded as:
+{'dash': {'74:c2:46:6a:fd:85': 'amazon elements', 'f0:27:2d:51:59:a2': True}, 'link': {}}
+2016-01-24 15:53:02,284:handle-dash-press:INFO:<module>(115):Initialization complete
+2016-01-24 15:53:30,173:handle-dash-press:INFO:handle_arp(45):Received button press from 'True'
+2016-01-24 15:53:30,173:handle-dash-press:DEBUG:handle_button(37):Handling button press for True...
+2016-01-24 15:53:42,149:handle-dash-press:INFO:handle_arp(45):Received button press from 'amazon elements'
+2016-01-24 15:53:42,149:handle-dash-press:DEBUG:handle_button(37):Handling button press for amazon elements...
+2016-01-24 15:59:07,335:handle-dash-press:INFO:<module>(82):Initializing...
+2016-01-24 15:59:07,335:handle-dash-press:INFO:<module>(84):Loading configuration...
+2016-01-24 15:59:07,335:handle-dash-press:DEBUG:<module>(96):Loading config file config.yaml
+2016-01-24 15:59:07,338:handle-dash-press:DEBUG:<module>(101):Config merged with defaults
+2016-01-24 15:59:07,338:handle-dash-press:DEBUG:<module>(110):Config loaded as:
+{'dash': {'74:c2:46:6a:fd:85': 'amazon elements', 'f0:27:2d:51:59:a2': 'on'}, 'link': {}}, saving this to disk
+2016-01-24 15:59:07,339:handle-dash-press:DEBUG:<module>(113):Config loaded as:
+{'dash': {'74:c2:46:6a:fd:85': 'amazon elements', 'f0:27:2d:51:59:a2': 'on'}, 'link': {}}
+2016-01-24 15:59:07,339:handle-dash-press:INFO:<module>(115):Initialization complete
+2016-01-24 15:59:19,761:handle-dash-press:INFO:handle_arp(45):Received button press from 'on'
+2016-01-24 15:59:19,761:handle-dash-press:DEBUG:handle_button(37):Handling button press for on...
+2016-01-24 15:59:34,510:handle-dash-press:INFO:handle_arp(45):Received button press from 'on'
+2016-01-24 15:59:34,510:handle-dash-press:DEBUG:handle_button(37):Handling button press for on...
+2016-01-25 07:45:26,989:handle-dash-press:INFO:<module>(113):Initializing...
+2016-01-25 07:45:26,989:handle-dash-press:INFO:<module>(115):Loading configuration...
+2016-01-25 07:45:26,990:handle-dash-press:DEBUG:<module>(135):Loading config file config.yaml
+2016-01-25 07:45:26,993:handle-dash-press:DEBUG:<module>(140):Config merged with defaults
+2016-01-25 07:45:26,993:handle-dash-press:DEBUG:<module>(149):Config loaded as:
+{'dash': {'74:c2:46:6a:fd:85': 'bcaa', 'f0:27:2d:51:59:a2': 'protein'}, 'link': {'protein': 'http://smile.amazon.com/gp/product/B00382AI4A', 'bcaa': 'http://smile.amazon.com/gp/product/B00BSGXS6I'}, 'trello': {'list': '', 'api-key': '', 'token-secret': '', 'token': '', 'board': '', 'api-secret': ''}}, saving this to disk
+2016-01-25 07:45:26,995:handle-dash-press:DEBUG:<module>(152):Config loaded as:
+{'dash': {'74:c2:46:6a:fd:85': 'bcaa', 'f0:27:2d:51:59:a2': 'protein'}, 'link': {'protein': 'http://smile.amazon.com/gp/product/B00382AI4A', 'bcaa': 'http://smile.amazon.com/gp/product/B00BSGXS6I'}, 'trello': {'list': '', 'api-key': '', 'token-secret': '', 'token': '', 'board': '', 'api-secret': ''}}
+2016-01-25 07:45:26,995:handle-dash-press:INFO:<module>(154):Initializing Trello...
+2016-01-25 07:45:26,995:handle-dash-press:DEBUG:<module>(162):Testing Trello (Listing Boards)...
+2016-01-25 07:46:18,833:handle-dash-press:INFO:<module>(113):Initializing...
+2016-01-25 07:46:18,834:handle-dash-press:INFO:<module>(115):Loading configuration...
+2016-01-25 07:46:18,834:handle-dash-press:DEBUG:<module>(135):Loading config file config.yaml
+2016-01-25 07:46:18,840:handle-dash-press:DEBUG:<module>(140):Config merged with defaults
+2016-01-25 07:46:18,840:handle-dash-press:DEBUG:<module>(149):Config loaded as:
+{'dash': {'74:c2:46:6a:fd:85': 'bcaa', 'f0:27:2d:51:59:a2': 'protein'}, 'link': {'protein': 'http://smile.amazon.com/gp/product/B00382AI4A', 'bcaa': 'http://smile.amazon.com/gp/product/B00BSGXS6I'}, 'trello': {'list': None, 'api-key': '3d05636fa51cca8f3406064f1f13719d', 'token-secret': 'b213cd0ece0da6ed445893b879af5f24', 'token': '81a3ce28a09051f1884fa1d72d6bc6b0d3bf94c1f5da38578098ba3423ae34ba', 'board': None, 'api-secret': '21858e541de7e3b76ec27d8940260bfaff0588a4badd61bdc37edb2b734dd42a'}}, saving this to disk
+2016-01-25 07:46:18,842:handle-dash-press:DEBUG:<module>(152):Config loaded as:
+{'dash': {'74:c2:46:6a:fd:85': 'bcaa', 'f0:27:2d:51:59:a2': 'protein'}, 'link': {'protein': 'http://smile.amazon.com/gp/product/B00382AI4A', 'bcaa': 'http://smile.amazon.com/gp/product/B00BSGXS6I'}, 'trello': {'list': None, 'api-key': '3d05636fa51cca8f3406064f1f13719d', 'token-secret': 'b213cd0ece0da6ed445893b879af5f24', 'token': '81a3ce28a09051f1884fa1d72d6bc6b0d3bf94c1f5da38578098ba3423ae34ba', 'board': None, 'api-secret': '21858e541de7e3b76ec27d8940260bfaff0588a4badd61bdc37edb2b734dd42a'}}
+2016-01-25 07:46:18,842:handle-dash-press:INFO:<module>(154):Initializing Trello...
+2016-01-25 07:46:18,843:handle-dash-press:DEBUG:<module>(162):Testing Trello (Listing Boards)...
+2016-01-25 07:46:19,131:handle-dash-press:DEBUG:<module>(163):[<Board 424 4_24>, <Board 424 5_7>, <Board 424 Planning>, <Board 425 5_19>, <Board 425 Planning>, <Board 503 5_29>, <Board L3 Incidents>, <Board Welcome Board>, <Board atomic data 4.2.3 to 4.2.5>, <Board cisco zsd config>, <Board dartmouth 4.2.3 to 4.2.5 upgrade>, <Board datapipe upgrade>, <Board email.rules>, <Board ethan group zsd install>, <Board finra zsd install>, <Board gcmlp 4.2.5 with impact>, <Board intertek ticket 25028>, <Board knowledge base>, <Board lean logistics>, <Board netapp impact upgrade>, <Board netapp it zsd install>, <Board orbitz upgrade>, <Board pegasystems 5498>, <Board pnc 5.x rnd>, <Board pnc 5515>, <Board pnc gfb>, <Board pnc gfb 5633>, <Board pnc gfb watchdog>, <Board pnc legacy>, <Board pnc watchdog>, <Board schwab>, <Board tasks>, <Board template>, <Board zLinux-eif.rules>, <Board zLinux_eif.rules>, <Board zenoss>, <Board zenoss_eif.rules>]
+2016-01-25 07:46:19,131:handle-dash-press:INFO:<module>(165):Initialization complete
+2016-01-25 07:55:09,390:handle-dash-press:INFO:<module>(113):Initializing...
+2016-01-25 07:55:09,390:handle-dash-press:INFO:<module>(115):Loading configuration...
+2016-01-25 07:55:09,390:handle-dash-press:DEBUG:<module>(135):Loading config file config.yaml
+2016-01-25 07:55:09,396:handle-dash-press:DEBUG:<module>(140):Config merged with defaults
+2016-01-25 07:55:09,396:handle-dash-press:DEBUG:<module>(149):Config loaded as:
+{'dash': {'74:c2:46:6a:fd:85': 'bcaa', 'f0:27:2d:51:59:a2': 'protein'}, 'link': {'protein': 'http://smile.amazon.com/gp/product/B00382AI4A', 'bcaa': 'http://smile.amazon.com/gp/product/B00BSGXS6I'}, 'trello': {'list': None, 'api-key': 'c1d9a9fa5ec1f9ed9d643efe11a3d200', 'token-secret': None, 'token': None, 'board': None, 'api-secret': 'af8187e56e09a0ddad9d127cc92bd3f44dee6a329e041251134058be8dba30a3'}}, saving this to disk
+2016-01-25 07:55:09,398:handle-dash-press:DEBUG:<module>(152):Config loaded as:
+{'dash': {'74:c2:46:6a:fd:85': 'bcaa', 'f0:27:2d:51:59:a2': 'protein'}, 'link': {'protein': 'http://smile.amazon.com/gp/product/B00382AI4A', 'bcaa': 'http://smile.amazon.com/gp/product/B00BSGXS6I'}, 'trello': {'list': None, 'api-key': 'c1d9a9fa5ec1f9ed9d643efe11a3d200', 'token-secret': None, 'token': None, 'board': None, 'api-secret': 'af8187e56e09a0ddad9d127cc92bd3f44dee6a329e041251134058be8dba30a3'}}
+2016-01-25 07:55:09,398:handle-dash-press:INFO:<module>(154):Initializing Trello...
+2016-01-25 07:55:09,398:handle-dash-press:DEBUG:<module>(162):Testing Trello (Listing Boards)...
+2016-01-25 08:01:30,763:handle-dash-press:INFO:<module>(113):Initializing...
+2016-01-25 08:01:30,763:handle-dash-press:INFO:<module>(115):Loading configuration...
+2016-01-25 08:01:30,763:handle-dash-press:DEBUG:<module>(135):Loading config file config.yaml
+2016-01-25 08:01:30,769:handle-dash-press:DEBUG:<module>(140):Config merged with defaults
+2016-01-25 08:01:30,769:handle-dash-press:DEBUG:<module>(149):Config loaded as:
+{'dash': {'74:c2:46:6a:fd:85': 'bcaa', 'f0:27:2d:51:59:a2': 'protein'}, 'link': {'protein': 'http://smile.amazon.com/gp/product/B00382AI4A', 'bcaa': 'http://smile.amazon.com/gp/product/B00BSGXS6I'}, 'trello': {'list': None, 'api-key': 'c1d9a9fa5ec1f9ed9d643efe11a3d200', 'token-secret': None, 'token': None, 'board': None, 'api-secret': 'af8187e56e09a0ddad9d127cc92bd3f44dee6a329e041251134058be8dba30a3'}}, saving this to disk
+2016-01-25 08:01:30,771:handle-dash-press:DEBUG:<module>(152):Config loaded as:
+{'dash': {'74:c2:46:6a:fd:85': 'bcaa', 'f0:27:2d:51:59:a2': 'protein'}, 'link': {'protein': 'http://smile.amazon.com/gp/product/B00382AI4A', 'bcaa': 'http://smile.amazon.com/gp/product/B00BSGXS6I'}, 'trello': {'list': None, 'api-key': 'c1d9a9fa5ec1f9ed9d643efe11a3d200', 'token-secret': None, 'token': None, 'board': None, 'api-secret': 'af8187e56e09a0ddad9d127cc92bd3f44dee6a329e041251134058be8dba30a3'}}
+2016-01-25 08:01:30,772:handle-dash-press:INFO:<module>(154):Initializing Trello...
+2016-01-25 08:01:30,772:handle-dash-press:DEBUG:<module>(163):Testing Trello (Listing Boards)...
+2016-01-25 08:01:30,931:handle-dash-press:ERROR:<module>(166):Authentication error, starting oauth generation...
+2016-01-25 08:02:19,478:handle-dash-press:INFO:<module>(113):Initializing...
+2016-01-25 08:02:19,478:handle-dash-press:INFO:<module>(115):Loading configuration...
+2016-01-25 08:02:19,478:handle-dash-press:DEBUG:<module>(135):Loading config file config.yaml
+2016-01-25 08:02:19,484:handle-dash-press:DEBUG:<module>(140):Config merged with defaults
+2016-01-25 08:02:19,484:handle-dash-press:DEBUG:<module>(149):Config loaded as:
+{'dash': {'74:c2:46:6a:fd:85': 'bcaa', 'f0:27:2d:51:59:a2': 'protein'}, 'link': {'protein': 'http://smile.amazon.com/gp/product/B00382AI4A', 'bcaa': 'http://smile.amazon.com/gp/product/B00BSGXS6I'}, 'trello': {'list': None, 'api-key': 'c1d9a9fa5ec1f9ed9d643efe11a3d200', 'token-secret': None, 'token': None, 'board': None, 'api-secret': 'af8187e56e09a0ddad9d127cc92bd3f44dee6a329e041251134058be8dba30a3'}}, saving this to disk
+2016-01-25 08:02:19,487:handle-dash-press:DEBUG:<module>(152):Config loaded as:
+{'dash': {'74:c2:46:6a:fd:85': 'bcaa', 'f0:27:2d:51:59:a2': 'protein'}, 'link': {'protein': 'http://smile.amazon.com/gp/product/B00382AI4A', 'bcaa': 'http://smile.amazon.com/gp/product/B00BSGXS6I'}, 'trello': {'list': None, 'api-key': 'c1d9a9fa5ec1f9ed9d643efe11a3d200', 'token-secret': None, 'token': None, 'board': None, 'api-secret': 'af8187e56e09a0ddad9d127cc92bd3f44dee6a329e041251134058be8dba30a3'}}
+2016-01-25 08:02:19,487:handle-dash-press:INFO:<module>(154):Initializing Trello...
+2016-01-25 08:02:19,487:handle-dash-press:DEBUG:<module>(163):Testing Trello (Listing Boards)...
+2016-01-25 08:02:19,639:handle-dash-press:ERROR:<module>(166):Authentication error, starting oauth generation...
+2016-01-25 08:03:33,991:handle-dash-press:INFO:<module>(114):Initializing...
+2016-01-25 08:03:33,992:handle-dash-press:INFO:<module>(116):Loading configuration...
+2016-01-25 08:03:33,992:handle-dash-press:DEBUG:<module>(136):Loading config file config.yaml
+2016-01-25 08:03:33,997:handle-dash-press:DEBUG:<module>(141):Config merged with defaults
+2016-01-25 08:03:33,998:handle-dash-press:DEBUG:<module>(150):Config loaded as:
+{'dash': {'74:c2:46:6a:fd:85': 'bcaa', 'f0:27:2d:51:59:a2': 'protein'}, 'link': {'protein': 'http://smile.amazon.com/gp/product/B00382AI4A', 'bcaa': 'http://smile.amazon.com/gp/product/B00BSGXS6I'}, 'trello': {'list': None, 'api-key': 'c1d9a9fa5ec1f9ed9d643efe11a3d200', 'token-secret': None, 'token': None, 'board': None, 'api-secret': 'af8187e56e09a0ddad9d127cc92bd3f44dee6a329e041251134058be8dba30a3'}}, saving this to disk
+2016-01-25 08:03:34,000:handle-dash-press:DEBUG:<module>(153):Config loaded as:
+{'dash': {'74:c2:46:6a:fd:85': 'bcaa', 'f0:27:2d:51:59:a2': 'protein'}, 'link': {'protein': 'http://smile.amazon.com/gp/product/B00382AI4A', 'bcaa': 'http://smile.amazon.com/gp/product/B00BSGXS6I'}, 'trello': {'list': None, 'api-key': 'c1d9a9fa5ec1f9ed9d643efe11a3d200', 'token-secret': None, 'token': None, 'board': None, 'api-secret': 'af8187e56e09a0ddad9d127cc92bd3f44dee6a329e041251134058be8dba30a3'}}
+2016-01-25 08:03:34,000:handle-dash-press:INFO:<module>(155):Initializing Trello...
+2016-01-25 08:03:34,000:handle-dash-press:DEBUG:<module>(164):Testing Trello (Listing Boards)...
+2016-01-25 08:03:34,138:handle-dash-press:ERROR:<module>(167):Authentication error, starting oauth generation...
+2016-01-25 08:03:59,255:handle-dash-press:INFO:<module>(173):Initialization complete
+2016-01-25 08:04:53,715:handle-dash-press:INFO:<module>(114):Initializing...
+2016-01-25 08:04:53,716:handle-dash-press:INFO:<module>(116):Loading configuration...
+2016-01-25 08:04:53,716:handle-dash-press:DEBUG:<module>(136):Loading config file config.yaml
+2016-01-25 08:04:53,723:handle-dash-press:DEBUG:<module>(141):Config merged with defaults
+2016-01-25 08:04:53,723:handle-dash-press:DEBUG:<module>(150):Config loaded as:
+{'dash': {'74:c2:46:6a:fd:85': 'bcaa', 'f0:27:2d:51:59:a2': 'protein'}, 'link': {'protein': 'http://smile.amazon.com/gp/product/B00382AI4A', 'bcaa': 'http://smile.amazon.com/gp/product/B00BSGXS6I'}, 'trello': {'list': None, 'api-key': 'c1d9a9fa5ec1f9ed9d643efe11a3d200', 'token-secret': '12356aceef3ce1d063f8af679b6a46e9', 'token': '104e8a6582dfc9a65f348fb4ee33badb3ed15c5d7bd48fb700f04694fe2b19ba', 'board': None, 'api-secret': 'af8187e56e09a0ddad9d127cc92bd3f44dee6a329e041251134058be8dba30a3'}}, saving this to disk
+2016-01-25 08:04:53,727:handle-dash-press:DEBUG:<module>(153):Config loaded as:
+{'dash': {'74:c2:46:6a:fd:85': 'bcaa', 'f0:27:2d:51:59:a2': 'protein'}, 'link': {'protein': 'http://smile.amazon.com/gp/product/B00382AI4A', 'bcaa': 'http://smile.amazon.com/gp/product/B00BSGXS6I'}, 'trello': {'list': None, 'api-key': 'c1d9a9fa5ec1f9ed9d643efe11a3d200', 'token-secret': '12356aceef3ce1d063f8af679b6a46e9', 'token': '104e8a6582dfc9a65f348fb4ee33badb3ed15c5d7bd48fb700f04694fe2b19ba', 'board': None, 'api-secret': 'af8187e56e09a0ddad9d127cc92bd3f44dee6a329e041251134058be8dba30a3'}}
+2016-01-25 08:04:53,727:handle-dash-press:INFO:<module>(155):Initializing Trello...
+2016-01-25 08:04:53,728:handle-dash-press:DEBUG:<module>(164):Testing Trello (Listing Boards)...
+2016-01-25 08:04:53,973:handle-dash-press:DEBUG:<module>(165):[<Board Hive Mind>, <Board Welcome Board>, <Board brain>, <Board dev>, <Board dev>, <Board finances>, <Board food>, <Board get-to-work>, <Board home>, <Board home gym>, <Board knowledge base>, <Board ksp>, <Board lean logistics>, <Board maine vacation>, <Board metrics>, <Board pat>, <Board people>, <Board salt>, <Board schwab>, <Board space-sim>, <Board tasks>, <Board tasks>, <Board tasks>, <Board tasks>, <Board tech>, <Board template>, <Board template>, <Board wishlist>]
+2016-01-25 08:04:53,973:handle-dash-press:INFO:<module>(173):Initialization complete
+2016-01-25 08:05:54,242:handle-dash-press:INFO:<module>(115):Initializing...
+2016-01-25 08:05:54,242:handle-dash-press:INFO:<module>(117):Loading configuration...
+2016-01-25 08:05:54,251:handle-dash-press:INFO:<module>(156):Initializing Trello...
+2016-01-25 08:05:54,251:handle-dash-press:INFO:<module>(174):Initialization complete
+2016-01-25 08:06:45,944:handle-dash-press:INFO:handle_arp(78):Received button press from 'bcaa'
+2016-01-25 08:06:45,945:handle-dash-press:INFO:handle_button(69):Received button press for bcaa, creating card...
+2016-01-25 08:06:46,184:handle-dash-press:ERROR:create_card(63):No board id defined in config. Possible values are:
+554a3af070b05d079d2e299f - Hive Mind
+539f52f49d74a8b8f37121a8 - Welcome Board
+554a3bf959eaef2407e60d62 - brain
+55508b35685dbc62ac12a910 - dev
+55508b4368cb7a5bfe0c6732 - dev
+53a18fec783bcdb2e7fd21bd - finances
+542c59f433c127cd499550f4 - food
+54a2af2ed991d8af965559ec - get-to-work
+53a3538f986a6c35c4730705 - home
+53a243a3beb836a0c52d30b8 - home gym
+567074d97f72b3371f59a90a - knowledge base
+53f1db3969ca12e8a4d9e244 - ksp
+563d1b41b7a3308f64a098bd - lean logistics
+539f5835b8d7911fec8de225 - maine vacation
+5535564fda842eab5e47613d - metrics
+54629a9b7ea190cc7848b6af - pat
+53a22da58ee7c7cbec573399 - people
+565372441520466724018bcb - salt
+54eb70e665cf55631214f9e3 - schwab
+53a0d2d949637c57406c18a9 - space-sim
+565f0bb5a56f0ead059b1910 - tasks
+5624c8f1b8ec0d7831b167a5 - tasks
+5624caa6efc6916284ea5e97 - tasks
+5624e269b8a14c9076961c7a - tasks
+53a0e6a90f89cbfa2625742e - tech
+53f1daf757a09b04e9dfc9fd - template
+54fd821dbb93f57d6d4c573d - template
+539f7bcaa5a91b99c5ea1f20 - wishlist
+2016-01-25 08:15:47,952:handle-dash-press:INFO:<module>(115):Initializing...
+2016-01-25 08:15:47,952:handle-dash-press:INFO:<module>(117):Loading configuration...
+2016-01-25 08:15:47,960:handle-dash-press:INFO:<module>(156):Initializing Trello...
+2016-01-25 08:15:47,961:handle-dash-press:INFO:<module>(174):Initialization complete
+2016-01-25 09:40:40,453:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: 62:34:61:33:33:37
+2016-01-25 09:40:41,453:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: 62:34:61:33:33:37
+2016-01-25 09:40:42,453:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: 62:34:61:33:33:37
+2016-01-25 09:41:06,953:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: 62:34:61:33:33:37
+2016-01-25 09:41:07,953:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: 62:34:61:33:33:37
+2016-01-25 09:41:08,953:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: 62:34:61:33:33:37
+2016-01-25 09:57:21,526:handle-dash-press:INFO:handle_arp(78):Received button press from 'bcaa'
+2016-01-25 09:57:21,527:handle-dash-press:INFO:handle_button(69):Received button press for bcaa, creating card...
+2016-01-25 09:57:21,865:handle-dash-press:ERROR:create_card(55):No list id defined in config. Possible values are:
+5624e269b8a14c9076961c7b - backlog
+5624e269b8a14c9076961c7c - this week
+5624e269b8a14c9076961c7d - today
+5661b2e9d824800ddc06d450 - document
+5624e269b8a14c9076961c7e - done
+5669b6efa7ed482df26b9670 - someday
+2016-01-25 09:58:00,539:handle-dash-press:INFO:<module>(115):Initializing...
+2016-01-25 09:58:00,539:handle-dash-press:INFO:<module>(117):Loading configuration...
+2016-01-25 09:58:00,547:handle-dash-press:INFO:<module>(156):Initializing Trello...
+2016-01-25 09:58:00,547:handle-dash-press:INFO:<module>(174):Initialization complete
+2016-01-25 12:11:39,130:handle-dash-press:INFO:handle_arp(78):Received button press from 'bcaa'
+2016-01-25 12:11:39,130:handle-dash-press:INFO:handle_button(69):Received button press for bcaa, creating card...
+2016-01-25 12:11:43,767:handle-dash-press:INFO:create_card(47):Card created for bcaa
+2016-02-04 14:19:14,252:handle-dash-press:INFO:<module>(115):Initializing...
+2016-02-04 14:19:14,253:handle-dash-press:INFO:<module>(117):Loading configuration...
+2016-02-04 14:19:14,261:handle-dash-press:INFO:<module>(156):Initializing Trello...
+2016-02-04 14:19:14,261:handle-dash-press:INFO:<module>(174):Initialization complete
+2016-02-04 14:19:21,132:handle-dash-press:INFO:<module>(115):Initializing...
+2016-02-04 14:19:21,132:handle-dash-press:INFO:<module>(117):Loading configuration...
+2016-02-04 14:19:21,140:handle-dash-press:INFO:<module>(156):Initializing Trello...
+2016-02-04 14:19:21,141:handle-dash-press:INFO:<module>(174):Initialization complete
+2016-02-04 14:23:07,413:handle-dash-press:INFO:<module>(115):Initializing...
+2016-02-04 14:23:07,413:handle-dash-press:INFO:<module>(117):Loading configuration...
+2016-02-04 14:23:07,421:handle-dash-press:INFO:<module>(156):Initializing Trello...
+2016-02-04 14:23:07,422:handle-dash-press:INFO:<module>(174):Initialization complete
+2016-02-04 14:28:05,549:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: 32:37:31:38:36:38
+2016-02-04 14:28:06,549:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: 32:37:31:38:36:38
+2016-02-04 14:28:07,549:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: 32:37:31:38:36:38
+2016-02-04 14:33:13,611:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: 32:37:31:38:36:38
+2016-02-04 14:33:14,611:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: 32:37:31:38:36:38
+2016-02-04 14:33:15,611:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: 32:37:31:38:36:38
+2016-02-04 15:58:49,481:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: 62:34:61:33:33:37
+2016-02-04 15:58:50,481:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: 62:34:61:33:33:37
+2016-02-04 15:58:51,481:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: 62:34:61:33:33:37
+2016-02-04 16:00:38,482:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: 62:34:61:33:33:37
+2016-02-04 16:00:39,482:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: 62:34:61:33:33:37
+2016-02-04 16:00:40,482:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: 62:34:61:33:33:37
+2016-02-04 16:58:26,583:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: bc:5f:f4:ca:fa:4f
+2016-02-04 16:58:27,582:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: bc:5f:f4:ca:fa:4f
+2016-02-04 16:58:28,580:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: bc:5f:f4:ca:fa:4f
+2016-02-05 08:10:05,339:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: 32:37:31:38:36:38
+2016-02-05 08:10:06,339:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: 32:37:31:38:36:38
+2016-02-05 08:10:07,339:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: 32:37:31:38:36:38
+2016-02-05 08:10:08,339:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: 32:37:31:38:36:38
+2016-02-05 08:10:09,339:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: 32:37:31:38:36:38
+2016-02-05 08:30:18,244:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 08:30:19,245:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 08:34:28,285:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 08:34:29,286:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 08:39:29,383:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 08:39:30,384:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 08:43:19,848:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 08:43:20,849:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 08:47:19,960:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 08:47:20,960:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 08:52:07,137:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 08:52:08,138:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 08:56:07,253:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 08:56:08,254:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 09:01:01,989:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 09:01:02,990:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 09:03:41,069:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 09:03:42,069:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 09:08:41,014:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 09:08:42,014:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 09:12:46,998:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 09:12:47,998:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 09:14:00,826:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 09:14:01,826:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 09:17:50,053:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 09:17:51,054:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 09:20:44,950:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: 62:34:61:33:33:37
+2016-02-05 09:20:45,950:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: 62:34:61:33:33:37
+2016-02-05 09:20:46,950:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: 62:34:61:33:33:37
+2016-02-05 09:21:10,450:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: 62:34:61:33:33:37
+2016-02-05 09:21:11,450:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: 62:34:61:33:33:37
+2016-02-05 09:21:12,450:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: 62:34:61:33:33:37
+2016-02-05 09:22:37,979:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 09:22:38,980:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 09:27:23,060:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 09:27:24,059:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 09:32:21,110:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 09:32:22,111:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 09:37:00,563:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 09:37:01,563:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 09:41:39,704:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 09:41:40,704:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 09:46:15,501:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 09:46:16,501:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 09:50:08,647:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 09:50:09,648:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 09:54:05,957:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 09:54:06,958:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 09:59:03,580:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 09:59:04,580:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 10:03:58,017:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 10:03:59,017:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 10:08:23,884:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 10:08:24,885:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 10:13:06,303:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 10:13:07,303:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 10:17:48,539:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 10:17:49,540:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 10:21:36,655:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 10:21:37,655:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 10:26:23,956:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 10:26:24,956:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 10:30:26,051:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 10:30:27,051:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 10:34:34,205:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 10:34:35,206:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 10:39:06,043:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 10:39:07,044:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 10:43:50,489:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 10:43:51,489:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 10:48:03,904:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 10:48:04,904:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 10:52:19,417:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 10:52:20,417:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 10:57:11,867:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 10:57:12,867:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 11:01:51,582:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 11:01:52,582:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 11:06:42,936:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 11:06:43,936:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 11:10:39,255:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 11:10:40,255:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 11:14:51,533:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 11:14:52,534:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 11:19:40,593:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 11:19:41,593:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 11:23:38,171:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 11:23:39,172:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 11:28:17,345:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 11:28:18,345:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 11:32:41,087:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 11:32:42,087:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 11:36:41,050:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 11:36:42,051:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 11:40:42,495:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 11:40:43,496:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 11:45:31,923:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 11:45:32,924:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 11:49:58,290:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 11:49:59,290:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 11:53:55,618:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 11:53:56,619:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 11:57:48,464:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 11:57:49,464:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 12:02:38,361:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 12:02:39,361:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 12:06:49,759:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 12:06:50,760:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 12:11:22,394:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 12:11:23,394:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 12:16:12,794:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 12:16:13,794:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 12:20:04,009:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 12:20:05,009:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 12:24:20,727:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 12:24:21,728:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 12:29:06,771:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 12:29:07,772:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 12:33:07,095:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 12:33:08,095:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 12:37:12,451:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 12:37:13,456:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 12:41:32,865:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 12:41:33,866:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 12:45:46,978:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
+2016-02-05 12:45:47,978:handle-dash-press:WARNING:handle_arp(81):Unrecognized ARP Probe from: a4:4e:31:42:2d:8c
