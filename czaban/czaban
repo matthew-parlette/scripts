@@ -10,6 +10,13 @@ from subprocess import call
 
 today = datetime.date.today()
 
+# They seem to regularly change the date format, I think it's just to mess with
+# me. This is a list of all I've seen.
+date_formats = [
+    '%-m-%d-%Y',
+    '%m-%d-%y',
+]
+
 parser = argparse.ArgumentParser(description='Find a czaban podcast'
                                  ' and play it on sonos. If the podcast'
                                  ' is not found, it will keep trying'
@@ -60,15 +67,22 @@ while not (url or args.exit_if_not_found):
     html = response.read()
 
     # https://audioboom.com/boos/4078524-1-19-2016-czaban-hour-1
-    match = re.search("https://audioboom.com/boos/"
-                      ".*-{}-czaban-hour-{}".format(
-                          args.date,
-                          args.hour),
-                      html)
-    if match and match.group(0):
-        url = match.group(0)
-        log.debug("Found URL of {}".format(url))
-    else:
+    # Add the date passed in as an argument to the date_formats list
+    date_formats.append(args.date)
+    for date in date_formats:
+        log.debug("Searching for date format '{}'...".format(date))
+        match = re.search("https://audioboom.com/boos/"
+                          ".*-{}-czaban-hour-{}".format(
+                              date,
+                              args.hour),
+                          html)
+        if match and match.group(0):
+            url = match.group(0)
+            log.debug("Found URL of {}".format(url))
+            break
+
+    if url is None:
+        # If we made it here, then no URL was found
         log.warning("Hour {} not found, waiting to retry...".format(
                     args.hour))
         if args.debug:
