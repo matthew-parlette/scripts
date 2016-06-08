@@ -74,11 +74,12 @@ if __name__ == "__main__":
         '-d', '--debug', action='store_true', help='Enable debug logging')
     parser.add_argument(
         '-c', '--config', help='Specify a config file to use',
-        type=str, default='config.yaml')
+        type=str, default=os.path.join(
+            os.path.dirname(os.path.realpath(__file__)), 'config.yaml'))
     parser.add_argument(
         'ticket', help='Ticket number to pull from trello',
         type=str)
-    parser.add_argument('--version', action='version', version='1.0')
+    parser.add_argument('--version', action='version', version='1.1')
     args = parser.parse_args()
 
     # Setup logging options
@@ -96,7 +97,9 @@ if __name__ == "__main__":
     log.addHandler(ch)
 
     # File Logging
-    fh = logging.FileHandler(os.path.basename(__file__) + '.log')
+    fh = logging.FileHandler(os.path.join(os.path.dirname(
+        os.path.realpath(__file__)),
+        os.path.basename(__file__) + '.log'))
     fh.setLevel(log_level)
     fh.setFormatter(formatter)
     log.addHandler(fh)
