@@ -11,7 +11,7 @@ function show_help {
     echo "Usage: $0 [options]"
     echo "Options:"
     echo -e "-h\tShow this help"
-    echo -e "-o\tSet output device (requires 'speakers' or 'headphones')"
+    echo -e "-o\tSet output device (requires 'speakers', 'tv', or 'headphones')"
     # echo -e "-s\tSet output to speakers"
 }
 
@@ -94,6 +94,9 @@ while getopts "ho:" opt; do
             output=$OPTARG
             if [[ $output =~ ^(s|speakers)$ ]]; then
                 output `pactl list short sinks | awk '/pci.*analog-stereo/ {print $2}'`
+            fi
+            if [[ $output =~ ^(t|tv)$ ]]; then
+                output `pactl list short sinks | awk '/pci.*hdmi/ {print $2}'`
             fi
             if [[ $output =~ ^(h|headphones)$ ]]; then
                 # set output for analog, then digital in case one isn't present
