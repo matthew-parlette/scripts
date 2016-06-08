@@ -79,7 +79,7 @@ if __name__ == "__main__":
     parser.add_argument(
         'ticket', help='Ticket number to pull from trello',
         type=str)
-    parser.add_argument('--version', action='version', version='1.1')
+    parser.add_argument('--version', action='version', version='1.2')
     args = parser.parse_args()
 
     # Setup logging options
@@ -178,6 +178,13 @@ if __name__ == "__main__":
 
     # I don't see a way to get a ticket except by search, 2016-06-08
     for ticket in zendesk.search(args.ticket, type='ticket'):
+        log.debug("Processing {} from ticket search...".format(ticket.id))
+        # Only create ticket for the ID passed in
+        if str(ticket.id) != str(args.ticket):
+            log.debug("Skipping {}, as it does not match {}".format(
+                ticket.id,
+                args.ticket))
+            continue
         log.info("Creating trello card for #{}".format(ticket.id))
         create_card(
             name="{}: {}".format(
