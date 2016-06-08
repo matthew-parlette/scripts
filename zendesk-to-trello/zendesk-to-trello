@@ -1,0 +1,185 @@
+#!/usr/bin/python
+
+import argparse
+import logging
+import os
+import sys
+import yaml
+import trello
+import trello.util
+import zenpy
+
+global config
+global log
+global trello
+
+
+def merge(x, y):
+    """
+    store a copy of x, but overwrite with y's values where applicable
+    """
+    merged = dict(x, **y)
+
+    xkeys = x.keys()
+
+    # if the value of merged[key] was overwritten with y[key]'s value
+    # then we need to put back any missing x[key] values
+    for key in xkeys:
+        # if this key is a dictionary, recurse
+        if isinstance(x[key], dict) and key in y:
+            merged[key] = merge(x[key], y[key])
+
+    return merged
+
+
+def create_card(name, description=None, link=None):
+    log.debug("Creating card for {} to {}...".format(name, link))
+
+    if config['trello']['board']:
+        board = trelloAPI.get_board(config['trello']['board'])
+        if board:
+            log.debug("Loaded board {}".format(str(board)))
+            if config['trello']['list']:
+                trellolist = board.get_list(config['trello']['list'])
+                if trellolist:
+                    card = trellolist.add_card(
+                        name=name,
+                        desc=description or "")
+                    if card and link:
+                        card.attach(url=link)
+                    log.info("Card created for {}".format(name))
+                else:
+                    log.error("Couldn't load list {}".format(
+                        config['trello']['list']))
+            else:
+                log.error("No list id defined in config. "
+                          "Possible values are:\n{}".format(
+                              '\n'.join(["{} - {}".format(
+                                  l.id, l.name) for l in board.open_lists()])))
+        else:
+            log.error("Couldn't load board {}".format(
+                config['trello']['board']))
+    else:
+        log.error("No board id defined in config. "
+                  "Possible values are:\n{}".format(
+                      '\n'.join(["{} - {}".format(
+                          b.id, b.name) for b in trelloAPI.list_boards()])))
+
+
+if __name__ == "__main__":
+    # Parse command line arguments
+    parser = argparse.ArgumentParser(
+        description='Process command line options.')
+    parser.add_argument(
+        '-d', '--debug', action='store_true', help='Enable debug logging')
+    parser.add_argument(
+        '-c', '--config', help='Specify a config file to use',
+        type=str, default='config.yaml')
+    parser.add_argument(
+        'ticket', help='Ticket number to pull from trello',
+        type=str)
+    parser.add_argument('--version', action='version', version='1.0')
+    args = parser.parse_args()
+
+    # Setup logging options
+    global log
+    log_level = logging.DEBUG if args.debug else logging.INFO
+    log = logging.getLogger(os.path.basename(__file__))
+    log.setLevel(log_level)
+    formatter = logging.Formatter('%(asctime)s:%(name)s:%(levelname)s'
+                                  ':%(funcName)s(%(lineno)i):%(message)s')
+
+    # Console Logging
+    ch = logging.StreamHandler()
+    ch.setLevel(log_level)
+    ch.setFormatter(formatter)
+    log.addHandler(ch)
+
+    # File Logging
+    fh = logging.FileHandler(os.path.basename(__file__) + '.log')
+    fh.setLevel(log_level)
+    fh.setFormatter(formatter)
+    log.addHandler(fh)
+
+    log.debug("Initializing...")
+
+    log.debug("Loading configuration...")
+    # Load Config
+    global config
+    defaults = {
+        "zendesk": {
+            "email": "",
+            "password": "",
+            "subdomain": "",
+        },
+        "trello": {
+            "api-key": "",
+            "api-secret": "",
+            "token": "",
+            "token-secret": "",
+            "board": "",
+            "list": "",
+        },
+    }
+    if os.path.isfile(args.config):
+        log.debug("Loading config file %s" % args.config)
+        config = yaml.load(file(args.config))
+        if config:
+            # config contains items
+            config = merge(defaults, yaml.load(file(args.config)))
+            log.debug("Config merged with defaults")
+        else:
+            # config is empty, just use defaults
+            config = defaults
+            log.debug("Config file was empty, loaded config from defaults")
+    else:
+        log.debug("Config file does not exist, creating a default config...")
+        config = defaults
+
+    log.debug("Config loaded as:\n%s, saving this to disk" % str(config))
+    with open(args.config, 'w') as outfile:
+        outfile.write(yaml.dump(config, default_flow_style=False))
+    log.debug("Config loaded as:\n%s" % str(config))
+
+    log.debug("Initializing Trello API...")
+    global trello
+    try:
+        trelloAPI = trello.TrelloClient(
+            api_key=config['trello']['api-key'],
+            api_secret=config['trello']['api-secret'],
+            token=config['trello']['token'],
+            token_secret=config['trello']['token-secret'])
+        if args.debug:
+            log.debug("Testing Trello (Listing Boards)...")
+            log.debug(str(trelloAPI.list_boards()))
+    except trello.exceptions.ResourceUnavailable:
+        log.error("Authentication error, starting oauth generation...")
+        trello.util.create_oauth_token(
+            expiration='never',
+            key=config['trello']['api-key'],
+            secret=config['trello']['api-secret'])
+        sys.exit(1)
+
+    log.debug("Initialization complete")
+
+    log.debug("Initializing Zendesk API...")
+    creds = {
+        'email': config['zendesk']['email'],
+        'password': config['zendesk']['password'],
+        'subdomain': config['zendesk']['subdomain'],
+    }
+    zendesk = zenpy.Zenpy(**creds)
+    if not zendesk.users.me():
+        log.error("Error getting current user with Zendesk API")
+        sys.exit(2)
+
+    # I don't see a way to get a ticket except by search, 2016-06-08
+    for ticket in zendesk.search(args.ticket, type='ticket'):
+        log.info("Creating trello card for #{}".format(ticket.id))
+        create_card(
+            name="{}: {}".format(
+                ticket.id,
+                ticket.subject),
+            description=ticket.description,
+            link="https://zenoss.zendesk.com/agent/tickets/{}".format(
+                ticket.id))
