@@ -32,7 +32,13 @@ def merge(x, y):
     return merged
 
 
-def create_card(name, description=None, link=None):
+def create_card(name, description=None, link=None, existing_to_board=True):
+    """
+    Create a card in trello with the given parameters.
+
+    If the card exists with the same name, send it to the board rather than
+    creating a new card.
+    """
     log.debug("Creating card for {} to {}...".format(name, link))
 
     if config['trello']['board']:
@@ -42,6 +48,17 @@ def create_card(name, description=None, link=None):
             if config['trello']['list']:
                 trellolist = board.get_list(config['trello']['list'])
                 if trellolist:
+                    # Does the card already exist?
+                    for card in board.get_cards(
+                        card_filter="all",
+                        filters={"name": name}):
+                        if card.name == name:
+                            log.info("Card exists, sending to board...")
+                            card.set_closed(False)
+                            card.change_list(config['trello']['list'])
+                            return
+
+                    # Card doesn't exist
                     card = trellolist.add_card(
                         name=name,
                         desc=description or "")
@@ -79,7 +96,7 @@ if __name__ == "__main__":
     parser.add_argument(
         'ticket', help='Ticket number to pull from trello',
         type=str)
-    parser.add_argument('--version', action='version', version='1.2')
+    parser.add_argument('--version', action='version', version='1.3')
     args = parser.parse_args()
 
     # Setup logging options
