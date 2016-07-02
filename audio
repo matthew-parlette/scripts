@@ -42,10 +42,10 @@ function volume () {
     sink=`pactl list short sinks | grep RUNNING | cut -f1`
     step="10"
     if [[ "$1" =~ ^(up|u)$ ]]; then
-        cmd="pactl set-sink-volume $sink -- +$step%"
+        cmd="pactl -- set-sink-volume $sink +$step%"
     fi
     if [[ "$1" =~ ^(down|d)$ ]]; then
-        cmd="pactl set-sink-volume $sink -- -$step%"
+        cmd="pactl -- set-sink-volume $sink -$step%"
     fi
     if [[ "$1" =~ ^(mute|m)$ ]]; then
         cmd="pactl set-sink-mute $sink toggle"
