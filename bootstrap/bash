@@ -14,6 +14,13 @@ function show_help {
 }
 
 # Ask a question, defaults to yes
+# Example:
+#   if yes_no_question "Question"
+#   then
+#       echo "User selected yes"
+#   else
+#       echo "User selected no"
+#   fi
 function yes_no_question () {
     read -r -p "$1 [Y/n] " response
     response=${response,,}
@@ -25,6 +32,13 @@ function yes_no_question () {
 }
 
 # Ask a question, defaults to no
+# Example:
+#   if no_yes_question "Question"
+#   then
+#       echo "User selected no"
+#   else
+#       echo "User selected yes"
+#   fi
 function no_yes_question () {
     read -r -p "$1 [Y/n] " response
     response=${response,,}
