@@ -52,7 +52,7 @@ def create_card(name, description=None, link=None, existing_to_board=True):
                     for card in board.get_cards(
                         card_filter="all",
                         filters={"name": name}):
-                        if card.name == name:
+                        if name in card.name:
                             log.info("Card exists, sending to board...")
                             card.set_closed(False)
                             card.change_list(config['trello']['list'])
