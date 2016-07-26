@@ -14,7 +14,9 @@ today = datetime.date.today()
 # me. This is a list of all I've seen.
 date_formats = [
     '%-m-%d-%Y',
+    '%-m-%d-%y',
     '%m-%d-%y',
+    '%m-%d-%Y',
 ]
 
 parser = argparse.ArgumentParser(description='Find a czaban podcast'
@@ -70,10 +72,10 @@ while not (url or args.exit_if_not_found):
     # Add the date passed in as an argument to the date_formats list
     date_formats.append(args.date)
     for date in date_formats:
-        log.debug("Searching for date format '{}'...".format(date))
+        log.debug("Searching for date format '{}'...".format(today.strftime(date)))
         match = re.search("https://audioboom.com/boos/"
                           ".*-{}-czaban-hour-{}".format(
-                              date,
+                              today.strftime(date),
                               args.hour),
                           html)
         if match and match.group(0):
