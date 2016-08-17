@@ -29,7 +29,7 @@ def merge(x, y):
     return merged
 
 
-def create_card(name, description=""):
+def create_card(name, description="", link=None):
     log.debug("Creating card '{}'...".format(name))
 
     if config['trello']['board']:
@@ -39,9 +39,11 @@ def create_card(name, description=""):
             if config['trello']['list']:
                 trellolist = board.get_list(config['trello']['list'])
                 if trellolist:
-                    trellolist.add_card(
+                    card = trellolist.add_card(
                         name=name,
                         desc=description)
+                    if card and link:
+                        card.attach(url=link)
                     log.info("Card created for {}".format(name))
                 else:
                     log.error("Couldn't load list {}".format(
@@ -60,6 +62,7 @@ def create_card(name, description=""):
                       '\n'.join(["{} - {}".format(
                           b.id, b.name) for b in trelloAPI.list_boards()])))
 
+
 if __name__ == "__main__":
     # Parse command line arguments
     parser = argparse.ArgumentParser(
@@ -69,6 +72,7 @@ if __name__ == "__main__":
     parser.add_argument(
         '-c', '--config', help='Specify a config file to use',
         type=str, default='config.yaml')
+    parser.add_argument('--dry-run', action='store_true')
     parser.add_argument('--version', action='version', version='0')
     args = parser.parse_args()
 
@@ -164,15 +168,35 @@ if __name__ == "__main__":
     tasks = []
     # Check for day of week tasks
     if str(dow) in config['weekly']:
-        tasks.extend(config['weekly'][str(dow)])
+        if isinstance(config['weekly'][str(dow)], list):
+            for task in config['weekly'][str(dow)]:
+                tasks.append({'name': task})
+        if isinstance(config['weekly'][str(dow)], dict):
+            for task, settings in config['weekly'][str(dow)].iteritems():
+                tasks.append({'name': task, 'url': settings.get('url', None)})
 
     # Check for day of month tasks
     if str(dom) in config['monthly']:
-        tasks.extend(config['monthly'][str(dom)])
+        if isinstance(config['monthly'][str(dom)], list):
+            for task in config['monthly'][str(dom)]:
+                tasks.append({'name': task})
+        if isinstance(config['monthly'][str(dom)], dict):
+            for task, settings in config['monthly'][str(dom)].iteritems():
+                tasks.append({'name': task, 'url': settings.get('url', None)})
 
     log.info("Tasks for today are {}".format(tasks))
 
     # Create task cards
     for task in tasks:
-        log.info("Creating task card '{}'...".format(task))
-        create_card(name=task, description="")
+        print str(task)
+        if args.dry_run:
+            log.info("Would create task card '{}'...".format(
+                task.get('name')))
+            log.debug("Card '{}' would have url '{}'...".format(
+                task.get('name'), task.get('url', '')))
+        else:
+            log.info("Creating task card '{}'...".format(task))
+            create_card(
+                name=task.get('name'),
+                description="",
+                link=task.get('url', None))
