@@ -7,7 +7,7 @@ import sys
 import yaml
 import trello
 import trello.util
-from jira import JIRA
+import jira
 
 global config
 global log
@@ -189,23 +189,36 @@ if __name__ == "__main__":
     options = {
         'server': config['jira']['url'],
     }
-    jira = JIRA(options, basic_auth=(
-        config['jira']['username'],
-        config['jira']['password']))
-    if not jira.search_issues("assignee={}".format(
-            config['jira']['username'])):
-        log.error("Error verifying Jira API connection")
-        sys.exit(2)
+    api = None
+    try:
+        api = jira.JIRA(options, basic_auth=(
+            config['jira']['username'],
+            config['jira']['password']))
+    except jira.exceptions.JIRAError:
+        pass
 
-    issue = jira.issue(args.issue)
+    if api:
+        if not api.search_issues("assignee={}".format(
+                config['jira']['username'])):
+            log.error("Error verifying Jira API connection")
+            sys.exit(2)
 
-    if issue:
-        log.debug("Found issue {}, processing...".format(issue.key))
-        create_card(
-            name="{}: {}".format(
-                issue.key,
-                issue.fields.summary),
-            description=issue.fields.description,
-            link="{}/browse/{}".format(config['jira']['url'], issue.key))
+        issue = api.issue(args.issue)
+
+        if issue:
+            log.debug("Found issue {}, processing...".format(issue.key))
+            create_card(
+                name="{}: {}".format(
+                    issue.key,
+                    issue.fields.summary),
+                description=issue.fields.description,
+                link="{}/browse/{}".format(config['jira']['url'], issue.key))
+        else:
+            log.error("Issue {} not found".format(args.issue))
+
     else:
-        log.error("Issue {} not found".format(args.issue))
+        log.error("JIRA could not be contacted, no issue data will be loaded")
+        create_card(
+            name="{}: {}".format(args.issue, 'JIRA'),
+            description='',
+            link="{}/browse/{}".format(config['jira']['url'], args.issue))

@@ -182,31 +182,44 @@ if __name__ == "__main__":
 
     log.debug("Initialization complete")
 
-    log.debug("Initializing Zendesk API...")
-    creds = {
-        'email': config['zendesk']['email'],
-        'password': config['zendesk']['password'],
-        'subdomain': config['zendesk']['subdomain'],
-    }
-    zendesk = zenpy.Zenpy(**creds)
-    if not zendesk.users.me():
-        log.error("Error getting current user with Zendesk API")
-        sys.exit(2)
+    zendesk = None
+    if (config['zendesk']['email'] and
+        config['zendesk']['password'] and
+        config['zendesk']['subdomain']):
+        log.debug("Initializing Zendesk API...")
+        creds = {
+            'email': config['zendesk']['email'],
+            'password': config['zendesk']['password'],
+            'subdomain': config['zendesk']['subdomain'],
+        }
+        zendesk = zenpy.Zenpy(**creds) or None
+    if not zendesk or not zendesk.users.me():
+        log.error("Error connecting to Zendesk API, Zendesk will not be queried...")
 
     # I don't see a way to get a ticket except by search, 2016-06-08
-    for ticket in zendesk.search(args.ticket, type='ticket'):
-        log.debug("Processing {} from ticket search...".format(ticket.id))
-        # Only create ticket for the ID passed in
-        if str(ticket.id) != str(args.ticket):
-            log.debug("Skipping {}, as it does not match {}".format(
-                ticket.id,
-                args.ticket))
-            continue
-        log.info("Creating trello card for #{}".format(ticket.id))
+    if zendesk:
+        for ticket in zendesk.search(args.ticket, type='ticket'):
+            log.debug("Processing {} from ticket search...".format(ticket.id))
+            # Only create ticket for the ID passed in
+            if str(ticket.id) != str(args.ticket):
+                log.debug("Skipping {}, as it does not match {}".format(
+                    ticket.id,
+                    args.ticket))
+                continue
+            log.info("Creating trello card for #{}".format(ticket.id))
+            create_card(
+                name="{}: {}".format(
+                    ticket.id,
+                    ticket.subject),
+                description=ticket.description,
+                link="https://zenoss.zendesk.com/agent/tickets/{}".format(
+                    ticket.id))
+    else:
+        log.info("Creating trello card for #{}".format(args.ticket))
         create_card(
             name="{}: {}".format(
-                ticket.id,
-                ticket.subject),
-            description=ticket.description,
-            link="https://zenoss.zendesk.com/agent/tickets/{}".format(
-                ticket.id))
+                args.ticket,
+                ''),
+            description='',
+            link="https://guardrail.zendesk.com/agent/tickets/{}".format(
+                args.ticket))
