@@ -1,0 +1,109 @@
+#!/usr/bin/env python
+import datetime
+import argparse
+import logging
+import os
+import urllib2
+import re
+import time
+import feedparser
+import pprint
+import sys
+from subprocess import call
+
+parser = argparse.ArgumentParser(description='Find a czaban podcast'
+                                 ' and play it on sonos. If the podcast'
+                                 ' is not found, it will keep trying'
+                                 ' until it is found and play it')
+parser.add_argument('--hour', type=int, default=1,
+                    help='Show hour to play')
+parser.add_argument('--yesterday', action='store_true')
+parser.add_argument('--date', default=datetime.date.today().strftime('%m-%d-%y'),
+                    help='Date to search for, in format mm-dd-yy')
+parser.add_argument('--url', default='http://cdn.stationcaster.com/stations/wtem/rss/21783.rss',
+                    help='URL for RSS feed')
+parser.add_argument('--retry-delay', default=5,
+                    help='Time in minutes to wait if podcast is not found')
+parser.add_argument('--sonos-command', default='play',
+                    help='Command to send to sonos when podcast is found')
+parser.add_argument('--exit-if-not-found', action='store_true',
+                    help='If the podcast is not found on the site,'
+                    ' then exit immediately')
+parser.add_argument('-d', '--debug', action='store_true',
+                    help='Print debug output')
+args = parser.parse_args()
+
+# Setup logging options
+log_level = logging.DEBUG if args.debug else logging.INFO
+log = logging.getLogger(os.path.basename(__file__))
+log.setLevel(log_level)
+formatter = logging.Formatter('%(asctime)s:%(name)s:%(levelname)s'
+                              ':%(funcName)s(%(lineno)i):%(message)s')
+
+# Console Logging
+ch = logging.StreamHandler()
+ch.setLevel(log_level)
+ch.setFormatter(formatter)
+log.addHandler(ch)
+
+# File Logging
+fh = logging.FileHandler(os.path.basename(__file__) + '.log')
+fh.setLevel(log_level)
+fh.setFormatter(formatter)
+log.addHandler(fh)
+
+if args.yesterday:
+    d = datetime.date.today() - datetime.timedelta(days=1)
+    while d.isoweekday() > 5:
+        d -= datetime.timedelta(days=1)
+    args.date = d.strftime('%m-%d-%y')
+
+log.debug("Args loaded as {}".format(str(args)))
+
+url = None
+
+while not url:
+    rss = feedparser.parse(args.url)
+
+    # log.debug("Full RSS feed:\n{}".format(pprint.pprint(rss)))
+
+    log.debug("Searching for entries from {}".format(args.date))
+    for entry in rss.entries:
+        log.debug("Testing {} in {}? {}".format(
+            args.date,
+            entry.title,
+            (args.date in entry.title),
+        ))
+        if args.date in entry.title:
+            if "hour {}".format(args.hour) in entry.title.lower():
+                url = entry.link
+                log.debug("Found mp3 url: {}".format(url))
+
+    """
+    # https://audioboom.com/boos/4078524-1-19-2016-czaban-hour-1
+    # Add the date passed in as an argument to the date_formats list
+    date_formats.append(args.date)
+    for date in date_formats:
+        log.debug("Searching for date format '{}'...".format(today.strftime(date)))
+        match = re.search("https://audioboom.com/boos/"
+                          ".*-{}-czaban-hour-{}".format(
+                              today.strftime(date),
+                              args.hour),
+                          html)
+        if match and match.group(0):
+            url = match.group(0)
+            log.debug("Found URL of {}".format(url))
+            break
+    """
+
+    if url is None:
+        msg = "Hour {} ({}) not found".format(args.hour, str(args.date))
+        if args.exit_if_not_found:
+            log.error("{}, exiting...".format(msg))
+            sys.exit(1)
+        # If we made it here, then no URL was found
+        log.warning("{}, waiting to retry...".format(msg))
+        time.sleep(args.retry_delay * 60)
+
+log.info("Found hour {}, playing...".format(args.hour))
+call(["sonos", args.sonos_command, url])
