@@ -1,0 +1,8 @@
+trello:
+  api-key: c1d9a9fa5ec1f9ed9d643efe11a3d200
+  api-secret: af8187e56e09a0ddad9d127cc92bd3f44dee6a329e041251134058be8dba30a3
+  defaults:
+    board: upguard-tasks
+    list: today
+  token: 104e8a6582dfc9a65f348fb4ee33badb3ed15c5d7bd48fb700f04694fe2b19ba
+  token-secret: 12356aceef3ce1d063f8af679b6a46e9

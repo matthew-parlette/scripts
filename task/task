@@ -1,0 +1,307 @@
+#!/usr/bin/env python
+
+import argparse
+import logging
+import os
+import yaml
+import sys
+import trello
+import trello.util
+import easygui
+import datetime
+from urlparse import urlparse
+
+global config
+global trelloAPI
+
+def merge(x, y):
+    """
+    store a copy of x, but overwrite with y's values where applicable
+    """
+    merged = dict(x, **y)
+
+    xkeys = x.keys()
+
+    # if the value of merged[key] was overwritten with y[key]'s value
+    # then we need to put back any missing x[key] values
+    for key in xkeys:
+        # if this key is a dictionary, recurse
+        if isinstance(x[key], dict) and key in y:
+            merged[key] = merge(x[key], y[key])
+
+    return merged
+
+def find_board(board):
+    """
+    Find a board object from the given name
+    """
+    log.debug("Finding board {}".format(str(board)))
+
+    if isinstance(board, trello.Board):
+        log.debug("Board {} is already a trello.Board object, returning...".format(str(board)))
+        return board
+
+    if isinstance(board, basestring):
+        log.debug("Searching for board matching {}".format(board))
+
+        # See if the board can be found by its ID
+        try:
+            return trelloAPI.get_board(board)
+        except trello.exceptions.ResourceUnavailable:
+            log.debug("Board {} not found by id, searching by name".format(board))
+
+        # Board must be a name, find it in the board list
+        boards = trelloAPI.list_boards(board_filter="open")
+        for b in boards:
+            if b.name == board:
+                log.debug("Found board {} that matches '{}'".format(str(b), board))
+                return b
+
+        log.error("Lookup of board {} returned {}".format(
+            board, str(found_board)))
+
+    log.error("Board could not be found: '{}'".format(str(board)))
+    return None
+
+def find_list(board, name):
+    """
+    Find a list object from the given name and board
+    """
+    log.debug("Finding list {}".format(str(name)))
+
+    if isinstance(name, trello.List):
+        return name
+
+    board_obj = find_board(board)
+
+    if board_obj and isinstance(trellolist, basestring):
+        lists = board_obj.open_lists()
+        log.debug("Board {} has lists {}".format(
+            board_obj.name, str(lists)))
+        for lst in lists:
+            if lst.id == name or lst.name == name:
+                return lst
+
+    return None
+
+def find_or_create_tag(board, name, color=None):
+    """
+    Find a tag if it exists, otherwise create it with the given name and color.
+    """
+    raise NotImplementedError
+
+def find_existing_task(board, list, name=None):
+    """
+    Find a task by either name or ID.
+    """
+    if name is None and id is None:
+        return None
+
+    if name:
+        # Try to find this as an ID first
+        # Then search by name
+        raise NotImplementedError
+
+def create_task(board, trellolist, name, description=None, link=None, existing_to_board=True):
+    """
+    Create a task in trello with the given parameters.
+
+    If the card exists with the same name, send it to the board rather than
+    creating a new card.
+    """
+    log.debug("Creating task '{}'...".format(name))
+
+    # Does the task already exist?
+    for card in board.get_cards(
+            card_filter="all",
+            filters={"name": name}):
+        if name in card.name:
+            if args.dry_run:
+                log.info("(dry run) Trello card exists, would send to board...")
+            else:
+                log.info("Trello Card exists, sending to board...")
+                card.set_closed(False)
+                card.change_list(config['trello']['list'])
+            return
+
+    # Card doesn't exist
+    if args.dry_run:
+        log.info("(dry run) Would create Trello card for {}...".format(name))
+    else:
+        card = trellolist.add_card(
+            name=name,
+            desc=description or "")
+        if card and link:
+            card.attach(url=link)
+        log.info("Trello card created for {}".format(name))
+
+def get_domain(url):
+    """
+    Return the friendly domain for a URL.
+    """
+    domain = urlparse(url).netloc
+    domain = domain.split('.')[-2]
+    log.debug("Found '{}' domain, returning...".format(str(domain)))
+    return domain
+
+if __name__ == "__main__":
+    # Parse command line arguments
+    parser = argparse.ArgumentParser(
+        description='Interact with tasks.')
+    parser.add_argument('command', default='create', help="create, schedule")
+    parser.add_argument('--gui', action='store_true', help="Show a GUI form")
+    parser.add_argument('-d', '--debug', action='store_true', help='Enable debug logging')
+    parser.add_argument('-c', '--config', help='Specify a config file to use',
+        type=str, default=os.path.join(os.path.dirname(os.path.realpath(__file__)), 'config.yaml'))
+    parser.add_argument('--dry-run', action='store_true', help="Don't actually operate on a task")
+    parser.add_argument('--version', action='version', version='0')
+
+    # Task options
+    parser.add_argument('--url', help="URL to add to task")
+    parser.add_argument('--name', help="Task name")
+    parser.add_argument('--description', help="Task description")
+    parser.add_argument('--for', help="Who is this task for?")
+    parser.add_argument('--board', help="Override board to create task in")
+    parser.add_argument('--list', help="Override list to create task in")
+    parser.add_argument('--parent', help="Parent task to link to. Can be a task name or ID.")
+
+    args = parser.parse_args()
+
+    # Setup logging options
+    log_level = logging.DEBUG if args.debug else logging.INFO
+    log = logging.getLogger(os.path.basename(__file__))
+    log.setLevel(log_level)
+    formatter = logging.Formatter('%(asctime)s:%(name)s:%(levelname)s'
+                                  ':%(funcName)s(%(lineno)i):%(message)s')
+
+    # Console Logging
+    ch = logging.StreamHandler()
+    ch.setLevel(log_level)
+    ch.setFormatter(formatter)
+    log.addHandler(ch)
+
+    # File Logging
+    fh = logging.FileHandler(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.basename(__file__)) + '.log')
+    fh.setLevel(log_level)
+    fh.setFormatter(formatter)
+    log.addHandler(fh)
+
+    log.info("Initializing...")
+
+    log.debug("Loading configuration...")
+    # Load Config
+    global config
+    defaults = {
+        "trello": {
+            "api-key": "",
+            "api-secret": "",
+            "token": "",
+            "token-secret": "",
+            "defaults": {
+                "board": "",
+                "list": "",
+            },
+        },
+    }
+    if os.path.isfile(args.config):
+        log.debug("Loading config file {}".format(args.config))
+        config = yaml.load(file(args.config))
+        if config:
+            # config contains items
+            config = merge(defaults, yaml.load(file(args.config)))
+            log.debug("Config merged with defaults")
+        else:
+            # config is empty, just use defaults
+            config = defaults
+            log.debug("Config file was empty, loaded config from defaults")
+    else:
+        log.debug("Config file does not exist, creating a default config...")
+        config = defaults
+
+    log.debug("Config loaded as:\n{}, saving this to disk".format(str(config)))
+    with open(args.config, 'w') as outfile:
+        outfile.write(yaml.dump(config, default_flow_style=False))
+    log.debug("Config loaded as:\n{}".format(str(config)))
+
+    log.debug("Initializing Trello API...")
+    global trelloAPI
+    try:
+        trelloAPI = trello.TrelloClient(
+            api_key=config['trello']['api-key'],
+            api_secret=config['trello']['api-secret'],
+            token=config['trello']['token'],
+            token_secret=config['trello']['token-secret'])
+        log.debug("Testing Trello (by listing boards)...")
+        boards = trelloAPI.list_boards()
+        if boards:
+            log.debug(str(boards))
+        else:
+            log.error("Boards could not be loaded, exiting...")
+    except trello.exceptions.ResourceUnavailable:
+        log.error("Authentication error, starting oauth generation...")
+        trello.util.create_oauth_token(
+            expiration='never',
+            key=config['trello']['api-key'],
+            secret=config['trello']['api-secret'])
+        sys.exit(1)
+
+    log.info("Initialization complete")
+
+    trellolist = args.list or config["trello"]["defaults"]["list"]
+    trellolist = find_list(
+        board=args.board or config["trello"]["defaults"]["board"],
+        name=trellolist)
+    log.debug("Using {}".format(str(trellolist)))
+
+    if args.command in ["new", "create", "add"]:
+        name = args.name or None
+        description = args.description or None
+        url = args.url or None
+
+        if args.gui:
+            values = easygui.multenterbox(
+                msg="{} task".format(args.command),
+                fields=["name", "description", "url"],
+                values=[name, description, url])
+            log.debug("GUI form returned {}".format(str(values)))
+            if values:
+                name = values[0]
+                description = values[1]
+                url = values[2]
+            else:
+                # User cancelled
+                sys.exit()
+
+        if not name and url:
+            # Extract name from url
+            domain = get_domain(url)
+            if domain in ["zendesk", "atlassian"]:
+                # example: https://guardrail.zendesk.com/agent/tickets/12345
+                # example: https://upguard.atlassian.net/browse/SEC-1234
+                name = url.split('/')[-1]
+            else:
+                log.warning("I don't know how to handle the '{}' domain".format(domain))
+
+        if not name:
+            log.error("Name is required for '{}' command".format(args.command))
+            sys.exit(2)
+
+        board = find_board(args.board or config["trello"]["board"])
+        create_task(
+            board=board,
+            trellolist=find_list(board=board, name=trellolist),
+            name=name,
+            description=description,
+            link=url,
+        )
+
+    if args.command in ["schedule"]:
+        """
+        For all cards in the today list, set the due date to today if there is no due date set.
+        """
+        cards = None
+        for card in trellolist.list_cards():
+            log.info(card.due_date)
+            if not card.due_date:
+                log.info("Setting due date for '{}' to {}".format(card.name, datetime.datetime.utcnow()))
+                card.set_due(datetime.datetime.utcnow())
