@@ -121,7 +121,8 @@ def create_task(board, trellolist, name, description=None, link=None, existing_t
             else:
                 log.info("Trello Card exists, sending to board...")
                 card.set_closed(False)
-                card.change_list(config['trello']['list'])
+                card.change_list(config['trello']['defaults']['list'])
+                card.set_due(datetime.datetime.utcnow())
             return
 
     # Card doesn't exist
@@ -133,6 +134,7 @@ def create_task(board, trellolist, name, description=None, link=None, existing_t
             desc=description or "")
         if card and link:
             card.attach(url=link)
+        card.set_due(datetime.datetime.utcnow())
         log.info("Trello card created for {}".format(name))
 
 def get_domain(url):
@@ -286,7 +288,7 @@ if __name__ == "__main__":
             log.error("Name is required for '{}' command".format(args.command))
             sys.exit(2)
 
-        board = find_board(args.board or config["trello"]["board"])
+        board = find_board(args.board or config["trello"]["defaults"]["board"])
         create_task(
             board=board,
             trellolist=find_list(board=board, name=trellolist),
@@ -299,9 +301,15 @@ if __name__ == "__main__":
         """
         For all cards in the today list, set the due date to today if there is no due date set.
         """
-        cards = None
         for card in trellolist.list_cards():
-            log.info(card.due_date)
             if not card.due_date:
                 log.info("Setting due date for '{}' to {}".format(card.name, datetime.datetime.utcnow()))
                 card.set_due(datetime.datetime.utcnow())
+
+    if args.command in ["daily"]:
+        """
+        For all cards:
+        * If not completed and due date has passed, set due date to today
+        * If due date is marked as completed, move to done list
+        """
+        pass
