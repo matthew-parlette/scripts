@@ -18,7 +18,7 @@ parser = argparse.ArgumentParser(description='Find a czaban podcast'
 parser.add_argument('--hour', type=int, default=1,
                     help='Show hour to play')
 parser.add_argument('--yesterday', action='store_true')
-parser.add_argument('--date', default=datetime.date.today().strftime('%m-%d-%y'),
+parser.add_argument('--date', default=(datetime.date.today() - datetime.timedelta(1)).strftime('%m-%d-%y'),
                     help='Date to search for, in format mm-dd-yy')
 parser.add_argument('--url', default='http://cdn.stationcaster.com/stations/wtem/rss/21783.rss',
                     help='URL for RSS feed')
@@ -78,23 +78,6 @@ while not url:
             if "hour {}".format(args.hour) in entry.title.lower():
                 url = entry.link
                 log.debug("Found mp3 url: {}".format(url))
-
-    """
-    # https://audioboom.com/boos/4078524-1-19-2016-czaban-hour-1
-    # Add the date passed in as an argument to the date_formats list
-    date_formats.append(args.date)
-    for date in date_formats:
-        log.debug("Searching for date format '{}'...".format(today.strftime(date)))
-        match = re.search("https://audioboom.com/boos/"
-                          ".*-{}-czaban-hour-{}".format(
-                              today.strftime(date),
-                              args.hour),
-                          html)
-        if match and match.group(0):
-            url = match.group(0)
-            log.debug("Found URL of {}".format(url))
-            break
-    """
 
     if url is None:
         msg = "Hour {} ({}) not found".format(args.hour, str(args.date))
