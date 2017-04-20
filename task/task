@@ -74,7 +74,7 @@ def find_list(board, name):
 
     board_obj = find_board(board)
 
-    if board_obj and isinstance(trellolist, basestring):
+    if board_obj and isinstance(name, basestring):
         lists = board_obj.open_lists()
         log.debug("Board {} has lists {}".format(
             board_obj.name, str(lists)))
@@ -249,9 +249,10 @@ if __name__ == "__main__":
 
     log.info("Initialization complete")
 
+    board = find_board(args.board or config["trello"]["defaults"]["board"])
     trellolist = args.list or config["trello"]["defaults"]["list"]
     trellolist = find_list(
-        board=args.board or config["trello"]["defaults"]["board"],
+        board=board,
         name=trellolist)
     log.debug("Using {}".format(str(trellolist)))
 
@@ -288,7 +289,6 @@ if __name__ == "__main__":
             log.error("Name is required for '{}' command".format(args.command))
             sys.exit(2)
 
-        board = find_board(args.board or config["trello"]["defaults"]["board"])
         create_task(
             board=board,
             trellolist=find_list(board=board, name=trellolist),
@@ -312,4 +312,11 @@ if __name__ == "__main__":
         * If not completed and due date has passed, set due date to today
         * If due date is marked as completed, move to done list
         """
-        pass
+        done = find_list(board, "done")
+        print "Searching for past-due cards..."
+        for card in board.open_cards():
+            if card.due_date and card.due_date.replace(tzinfo=None) < datetime.datetime.utcnow():
+                if card.idList != done.id:
+                    print "Found incomplete card that is past due: '{}'".format(card.name)
+                    print "Setting due date to today..."
+                    card.set_due(datetime.datetime.utcnow())
