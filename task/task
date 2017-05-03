@@ -1,0 +1,447 @@
+#!/usr/bin/env python
+
+import argparse
+import logging
+import os
+import yaml
+import sys
+import trello
+import trello.util
+import easygui
+import datetime
+from urlparse import urlparse
+
+class Task(object):
+    def __init__(self):
+        parser = self.parser(
+            description="Perform an action on a trello task",
+            usage='''task <command> [<args>]
+
+The possible commands are:
+   create     Create a new trello task
+   working    Make sure the due dates have not passed
+   daily      Perform daily task maintenance
+''')
+        parser.add_argument('command', help='Command to run')
+        args = parser.parse_args(sys.argv[1:2])
+        if not hasattr(self, args.command):
+            print 'Unrecognized command'
+            parser.print_help()
+            exit(1)
+
+        getattr(self, args.command)()
+
+    def initialize(self):
+        self.setupLogger()
+
+        self.log.info("Initializing...")
+        self.loadConfig()
+
+        self.api = Trello(
+            self.log,
+            api_key=self.config['trello']['api-key'],
+            api_secret=self.config['trello']['api-secret'],
+            token=self.config['trello']['token'],
+            token_secret=self.config['trello']['token-secret'],
+            board=self.args.board or self.config["trello"]["defaults"]["board"],
+            trellolist=self.args.list or self.config["trello"]["defaults"]["list"],
+            dry_run=self.args.dry_run)
+
+        self.log.info("Initialization complete")
+
+    def parser(self, description, usage=None):
+        parser = argparse.ArgumentParser(description=description, usage=usage)
+        parser.add_argument('--gui', action='store_true', help="Show a GUI form")
+        parser.add_argument('-d', '--debug', action='store_true', help='Enable debug logging')
+        parser.add_argument('-c', '--config', help='Specify a config file to use',
+            type=str, default=os.path.join(os.path.dirname(os.path.realpath(__file__)), 'config.yaml'))
+        parser.add_argument('--dry-run', action='store_true', help="Don't actually operate on a task")
+        parser.add_argument('--version', action='version', version='0')
+
+        # Task options
+        parser.add_argument('--url', help="URL to add to task")
+        parser.add_argument('--name', help="Task name")
+        parser.add_argument('--description', help="Task description")
+        parser.add_argument('--for', help="Who is this task for?")
+        parser.add_argument('--board', help="Override board to create task in")
+        parser.add_argument('--list', help="Override list to create task in")
+        parser.add_argument('--parent', help="Parent task to link to. Can be a task name or ID.")
+        return parser
+
+    def setupLogger(self):
+        log_level = logging.DEBUG if self.args.debug else logging.INFO
+        self.log = logging.getLogger(os.path.basename(__file__))
+        self.log.setLevel(log_level)
+        formatter = logging.Formatter('%(asctime)s:%(name)s:%(levelname)s'
+                                      ':%(funcName)s(%(lineno)i):%(message)s')
+
+        # Console Logging
+        ch = logging.StreamHandler()
+        ch.setLevel(log_level)
+        ch.setFormatter(formatter)
+        self.log.addHandler(ch)
+
+        # File Logging
+        fh = logging.FileHandler(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.basename(__file__)) + '.log')
+        fh.setLevel(log_level)
+        fh.setFormatter(formatter)
+        self.log.addHandler(fh)
+
+    def loadConfig(self):
+        self.log.debug("Loading configuration...")
+        defaults = {
+            "trello": {
+                "api-key": "",
+                "api-secret": "",
+                "token": "",
+                "token-secret": "",
+                "defaults": {
+                    "board": "",
+                    "list": "",
+                },
+            },
+            "url": {
+                "zendesk": "",
+                "jira": "",
+            },
+        }
+        if os.path.isfile(self.args.config):
+            self.log.debug("Loading config file {}".format(self.args.config))
+            self.config = yaml.load(file(self.args.config))
+            if self.config:
+                # config contains items
+                self.config = merge(defaults, yaml.load(file(self.args.config)))
+                self.log.debug("Config merged with defaults")
+            else:
+                # config is empty, just use defaults
+                self.config = defaults
+                self.log.debug("Config file was empty, loaded config from defaults")
+        else:
+            self.log.debug("Config file does not exist, creating a default config...")
+            self.config = defaults
+
+        self.log.debug("Config loaded as:\n{}, saving this to disk".format(str(self.config)))
+        with open(self.args.config, 'w') as outfile:
+            outfile.write(yaml.dump(self.config, default_flow_style=False))
+        self.log.debug("Config loaded as:\n{}".format(str(self.config)))
+
+    def create(self):
+        parser = self.parser('Create a new task')
+        parser.add_argument('--zendesk', help="Create a new task from a zendesk ticket")
+        parser.add_argument('--jira', help="Create a new task from a JIRA issue")
+        self.args = parser.parse_args(sys.argv[2:])
+        self.initialize()
+
+        name = self.args.name or None
+        description = self.args.description or None
+
+        url = self.args.url or None
+        url = os.path.join(self.config["url"]["zendesk"], self.args.zendesk) if self.args.zendesk else url
+        url = os.path.join(self.config["url"]["jira"], self.args.jira) if self.args.jira else url
+
+        if self.args.gui:
+            values = easygui.multenterbox(
+                msg="Create Task",
+                fields=["name", "description", "url"],
+                values=[name, description, url])
+            self.log.debug("GUI form returned {}".format(str(values)))
+            if values:
+                name = values[0]
+                description = values[1]
+                url = values[2]
+            else:
+                # User cancelled
+                sys.exit()
+
+        if not name and url:
+            # Extract name from url
+            domain = get_domain(url)
+            if domain in ["zendesk", "atlassian"]:
+                # example: https://guardrail.zendesk.com/agent/tickets/12345
+                # example: https://upguard.atlassian.net/browse/SEC-1234
+                name = url.split('/')[-1]
+            else:
+                self.log.warning("I don't know how to handle the '{}' domain".format(domain))
+
+        if not name:
+            self.log.error("Name is required for 'create' command")
+            sys.exit(2)
+
+        self.api.createTask(
+            name=name,
+            description=description,
+            link=url,
+        )
+
+    def working(self):
+        """
+        For all cards in the today list, set the due date to today if there is no due date set.
+        """
+        parser = self.parser('Working tasks should be assigned to today')
+        self.args = parser.parse_args(sys.argv[2:])
+        self.initialize()
+
+        for card in self.api.trellolist.list_cards():
+            if not card.due_date:
+                self.log.info("Setting due date for '{}' to {}".format(card.name, datetime.datetime.utcnow()))
+                card.set_due(datetime.datetime.utcnow())
+
+    def daily(self):
+        """
+        For all cards:
+        * If not completed and due date has passed, set due date to today
+        * If due date is marked as completed, move to done list
+        """
+        parser = self.parser('Working tasks should be assigned to today')
+        self.args = parser.parse_args(sys.argv[2:])
+        self.initialize()
+
+        done = self.api.findList(self.api.board, "done")
+        print "Searching for past-due cards..."
+        for card in self.api.board.open_cards():
+            if card.due_date and card.due_date.replace(tzinfo=None) < datetime.datetime.utcnow():
+                if card.idList != done.id:
+                    print "Found incomplete card that is past due: '{}'".format(card.name)
+                    print "Setting due date to today..."
+                    card.set_due(datetime.datetime.utcnow())
+
+class Trello(object):
+    def __init__(self, log, api_key, api_secret, token, token_secret, board, trellolist, dry_run=False):
+        self.log = log
+        self.dry_run = dry_run
+        self.log.debug("Initializing Trello API...")
+        try:
+            self.api = trello.TrelloClient(
+                api_key=api_key,
+                api_secret=api_secret,
+                token=token,
+                token_secret=token_secret)
+            self.log.debug("Testing Trello (by listing boards)...")
+            boards = self.api.list_boards()
+            if boards:
+                self.log.debug(str(boards))
+            else:
+                self.log.error("Boards could not be loaded, exiting...")
+        except trello.exceptions.ResourceUnavailable:
+            self.log.error("Authentication error, starting oauth generation...")
+            trello.util.create_oauth_token(
+                expiration='never',
+                key=config['trello']['api-key'],
+                secret=config['trello']['api-secret'])
+            sys.exit(1)
+
+        self.board = self.findBoard(board)
+        self.trellolist = self.findList(board=board, name=trellolist)
+        self.log.debug("...Trello API Initialized")
+
+    def findBoard(self, board):
+        """
+        Find a board object from the given name
+        """
+        self.log.debug("Finding board {}".format(str(board)))
+
+        if isinstance(board, trello.Board):
+            self.log.debug("Board {} is already a trello.Board object, returning...".format(str(board)))
+            return board
+
+        if isinstance(board, basestring):
+            self.log.debug("Searching for board matching {}".format(board))
+
+            # See if the board can be found by its ID
+            try:
+                return self.api.get_board(board)
+            except trello.exceptions.ResourceUnavailable:
+                self.log.debug("Board {} not found by id, searching by name".format(board))
+
+            # Board must be a name, find it in the board list
+            boards = self.api.list_boards(board_filter="open")
+            for b in boards:
+                if b.name == board:
+                    self.log.debug("Found board {} that matches '{}'".format(str(b), board))
+                    return b
+
+            self.log.error("Lookup of board {} returned {}".format(
+                board, str(found_board)))
+
+        self.log.error("Board could not be found: '{}'".format(str(board)))
+        return None
+
+    def findList(self, board, name):
+        """
+        Find a list object from the given name and board
+        """
+        self.log.debug("Finding list {}".format(str(name)))
+
+        if self.board is None:
+            self.log.debug("Board is empty, returning None...")
+            return None
+
+        if isinstance(name, trello.List):
+            self.log.debug("Parameter {} is already a Trello list, returning...").format(str(name))
+            return name
+
+        board_obj = self.findBoard(board)
+
+        if board_obj and isinstance(name, basestring):
+            lists = board_obj.open_lists()
+            self.log.debug("Board {} has lists {}".format(
+                board_obj.name, str(lists)))
+            for lst in lists:
+                if lst.id == name or lst.name == name:
+                    return lst
+
+        return None
+
+    def findTask(self, name=None):
+        """
+        Find a task by either name or ID.
+        """
+        if name is None and id is None:
+            return None
+
+        if name:
+            # Try to find this as an ID first
+            # Then search by name
+            raise NotImplementedError
+
+    def createTask(self, name, description=None, link=None, existing_to_board=True):
+        """
+        Create a task in trello with the given parameters.
+
+        If the card exists with the same name, send it to the board rather than
+        creating a new card.
+        """
+        self.log.debug("Creating task '{}'...".format(name))
+
+        # Does the task already exist?
+        for card in self.board.get_cards(
+                card_filter="all",
+                filters={"name": name}):
+            if name in card.name:
+                if args.dry_run:
+                    log.info("(dry run) Trello card exists, would send to board...")
+                else:
+                    log.info("Trello Card exists, sending to board...")
+                    card.set_closed(False)
+                    card.change_list(config['trello']['defaults']['list'])
+                    card.set_due(datetime.datetime.utcnow())
+                return
+
+        # Card doesn't exist
+        if self.dry_run:
+            self.log.info("(dry run) Would create Trello card for {}...".format(name))
+        else:
+            card = self.trellolist.add_card(
+                name=name,
+                desc=description or "")
+            if card and link:
+                card.attach(url=link)
+            card.set_due(datetime.datetime.utcnow())
+            self.log.info("Trello card created for {}".format(name))
+
+def merge(x, y):
+    """
+    store a copy of x, but overwrite with y's values where applicable
+    """
+    merged = dict(x, **y)
+
+    xkeys = x.keys()
+
+    # if the value of merged[key] was overwritten with y[key]'s value
+    # then we need to put back any missing x[key] values
+    for key in xkeys:
+        # if this key is a dictionary, recurse
+        if isinstance(x[key], dict) and key in y:
+            merged[key] = merge(x[key], y[key])
+
+    return merged
+
+def find_or_create_tag(board, name, color=None):
+    """
+    Find a tag if it exists, otherwise create it with the given name and color.
+    """
+    raise NotImplementedError
+
+def find_existing_task(board, list, name=None):
+    """
+    Find a task by either name or ID.
+    """
+    if name is None and id is None:
+        return None
+
+    if name:
+        # Try to find this as an ID first
+        # Then search by name
+        raise NotImplementedError
+
+def create_task(board, trellolist, name, description=None, link=None, existing_to_board=True):
+    """
+    Create a task in trello with the given parameters.
+
+    If the card exists with the same name, send it to the board rather than
+    creating a new card.
+    """
+    self.log.debug("Creating task '{}'...".format(name))
+
+    # Does the task already exist?
+    for card in board.get_cards(
+            card_filter="all",
+            filters={"name": name}):
+        if name in card.name:
+            if args.dry_run:
+                log.info("(dry run) Trello card exists, would send to board...")
+            else:
+                log.info("Trello Card exists, sending to board...")
+                card.set_closed(False)
+                card.change_list(config['trello']['defaults']['list'])
+                card.set_due(datetime.datetime.utcnow())
+            return
+
+    # Card doesn't exist
+    if self.dry_run:
+        self.log.info("(dry run) Would create Trello card for {}...".format(name))
+    else:
+        card = trellolist.add_card(
+            name=name,
+            desc=description or "")
+        if card and link:
+            card.attach(url=link)
+        card.set_due(datetime.datetime.utcnow())
+        self.log.info("Trello card created for {}".format(name))
+
+def get_domain(url):
+    """
+    Return the friendly domain for a URL.
+    """
+    domain = urlparse(url).netloc
+    domain = domain.split('.')[-2]
+    # log.debug("Found '{}' domain, returning...".format(str(domain)))
+    return domain
+
+if __name__ == "__main__":
+    Task()
+    sys.exit(0)
+
+    if args.command in ["schedule"]:
+        """
+        For all cards in the today list, set the due date to today if there is no due date set.
+        """
+        for card in trellolist.list_cards():
+            if not card.due_date:
+                log.info("Setting due date for '{}' to {}".format(card.name, datetime.datetime.utcnow()))
+                card.set_due(datetime.datetime.utcnow())
+
+    if args.command in ["daily"]:
+        """
+        For all cards:
+        * If not completed and due date has passed, set due date to today
+        * If due date is marked as completed, move to done list
+        """
+        done = find_list(board, "done")
+        print "Searching for past-due cards..."
+        for card in board.open_cards():
+            if card.due_date and card.due_date.replace(tzinfo=None) < datetime.datetime.utcnow():
+                if card.idList != done.id:
+                    print "Found incomplete card that is past due: '{}'".format(card.name)
+                    print "Setting due date to today..."
+                    card.set_due(datetime.datetime.utcnow())
