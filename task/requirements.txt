@@ -1,3 +1,4 @@
 pyyaml
 py-trello
 easygui
+argcomplete
