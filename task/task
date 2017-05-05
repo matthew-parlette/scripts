@@ -21,6 +21,7 @@ The possible commands are:
    create     Create a new trello task
    working    Make sure the due dates have not passed
    daily      Perform daily task maintenance
+   prioritize Prioritize tasks within their current list
 ''')
         parser.add_argument('command', help='Command to run')
         args = parser.parse_args(sys.argv[1:2])
@@ -104,6 +105,11 @@ The possible commands are:
                 "zendesk": "",
                 "jira": "",
             },
+            "priority": {
+                "high": "high",
+                "medium": "medium",
+                "low": "low",
+            }
         }
         if os.path.isfile(self.args.config):
             self.log.debug("Loading config file {}".format(self.args.config))
@@ -204,6 +210,26 @@ The possible commands are:
                     print "Found incomplete card that is past due: '{}'".format(card.name)
                     print "Setting due date to today..."
                     card.set_due(datetime.datetime.utcnow())
+
+    def prioritize(self):
+        """
+        For all cards not done, move higher priorities up and lower priorities down in their list.
+        """
+        parser = self.parser('Prioritize tasks within their current list')
+        self.args = parser.parse_args(sys.argv[2:])
+        self.initialize()
+
+        for lst in self.api.board.open_lists():
+            if lst.name == "done":
+                continue
+            self.log.info("Setting priority on '{}'...".format(lst.name))
+            for card in lst.list_cards():
+                if card.list_labels:
+                    for label in card.list_labels:
+                        if label.name == self.config["priority"]["high"]:
+                            card.set_pos("top")
+                        if label.name == self.config["priority"]["low"]:
+                            card.set_pos("bottom")
 
 class Trello(object):
     def __init__(self, log, api_key, api_secret, token, token_secret, board, trellolist, dry_run=False):
