@@ -12,7 +12,7 @@
   , grain="os_family"
   , merge=salt['pillar.get']('template:lookup'))
 %}
-{% do default_settings.santa.update(os_family_map) %}
+{% do default_settings.template.update(os_family_map) %}
 
 {% set template = salt['pillar.get'](
         'template',
