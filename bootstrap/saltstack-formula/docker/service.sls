@@ -22,7 +22,7 @@ template-container:
       - {{ template.directory }}:/path/on/container:rw
     - port_bindings:
       - {{ template.port }}:3000
-    {%- if template.environment %}
+    {%- if template['environment'] is defined %}
     - environment:
       {%- for env, value in template.environment.items() %}
       - {{ env }}: {{ value|yaml_squote }}
