@@ -26,12 +26,12 @@ function yes_no_question () {
 
 # Ask a question, defaults to no
 function no_yes_question () {
-    read -r -p "$1 [Y/n] " response
+    read -r -p "$1 [y/N] " response
     response=${response,,}
     if [[ "$response" =~ ^(no|n|)$ ]]; then
-        return 0
-    else
         return 1
+    else
+        return 0
     fi
 }
 
@@ -100,6 +100,32 @@ then
     eval "git add ."
     eval "git commit -am 'Initial commit copied from template'"
     eval "cd $exec_dir"
+
+    # Remove changelog
+    echo "Removing Changelog..."
+    eval "cd $dest_path"
+    eval "git rm CHANGELOG.rst"
+    eval "git commit -am 'Remove changelog'"
+    eval "cd $exec_dir"
+
+    if no_yes_question "Is this formula going to run a docker container?"
+    then
+      echo "Setting up files for a docker formula..."
+      eval "cp -r $script_dir/bootstrap/saltstack-formula/docker/* $dest_path/template/"
+      eval "mv $dest_path/template/pillar.example $dest_path/pillar.example"
+    fi
+
+    shortname=$(echo $dest_path| cut -d'-' -f 1)
+    if yes_no_question "Would you like to replace 'template' => '$shortname'?"
+    then
+      echo "Replacing all instances of 'template' with '$shortname'..."
+      eval "cd $dest_path"
+      eval "git mv template $shortname"
+      eval "git commit -m 'Renaming template directory'"
+      eval "find . -type f -exec sed -i "s/template/$shortname/g" {} \;"
+      eval "git commit -am 'Replacing template with $shortname in all files'"
+      eval "cd $exec_dir"
+    fi
 else
     echo "Cancelling..."
 fi
