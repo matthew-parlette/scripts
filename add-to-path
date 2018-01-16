@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 dir=`pwd`
 
 function show_help {
@@ -9,14 +9,41 @@ function show_help {
   echo -e "-h\tShow this help"
 }
 
-function yes_no_question () {
-    read -r -p "$1 [Y/n] " response
-    response=${response,,}
-    if [[ "$response" =~ ^(yes|y|)$ ]]; then
-        return 0
-    else
-        return 1
-    fi
+ask() {
+    # https://djm.me/ask
+    local prompt default reply
+
+    while true; do
+
+        if [ "${2:-}" = "Y" ]; then
+            prompt="Y/n"
+            default=Y
+        elif [ "${2:-}" = "N" ]; then
+            prompt="y/N"
+            default=N
+        else
+            prompt="y/n"
+            default=
+        fi
+
+        # Ask the question (not using "read -p" as it uses stderr not stdout)
+        echo -n "$1 [$prompt] "
+
+        # Read the answer (use /dev/tty in case stdin is redirected from somewhere else)
+        read reply </dev/tty
+
+        # Default?
+        if [ -z "$reply" ]; then
+            reply=$default
+        fi
+
+        # Check if the reply is valid
+        case "$reply" in
+            Y*|y*) return 0 ;;
+            N*|n*) return 1 ;;
+        esac
+
+    done
 }
 
 if [ -n "$1" ]
@@ -39,17 +66,17 @@ done
 
 echo "Adding '$binary' to PATH..."
 
-if yes_no_question "This will add $binary to PATH, continue?"
+if ask "This will add $binary to PATH, continue?" Y
 then
     echo "Adding '$binary' to PATH..."
-    if [ -h "/usr/bin/$binary" ]
+    if [ -h "/usr/local/bin/$binary" ]
     then
         echo -e "\n************"
-        eval "ls -al /usr/bin/$binary"
+        eval "ls -al /usr/local/bin/$binary"
         if yes_no_question "$binary link already exists, remove it?"
         then
-            echo "Deleting link /usr/bin/$binary..."
-            eval "sudo rm /usr/bin/$binary"
+            echo "Deleting link /usr/local/bin/$binary..."
+            eval "sudo rm /usr/local/bin/$binary"
         else
             echo "Exiting, no changes made..."
             exit 0
@@ -57,8 +84,8 @@ then
         echo -e "************\n"
     fi
     echo "Creating symlink /usr/bin/$binary..."
-    eval "sudo ln -s $dir/$binary /usr/bin/$binary"
-    eval "ls -al /usr/bin/$binary"
+    eval "sudo ln -s $dir/$binary /usr/local/bin/$binary"
+    eval "ls -al /usr/local/bin/$binary"
 else
     echo "Cancelling..."
 fi
