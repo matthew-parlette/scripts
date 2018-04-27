@@ -1,0 +1,211 @@
+#!/usr/bin/env python
+
+import argparse
+import logging
+import os
+import sys
+import yaml
+import jira
+import todoist
+
+from pprint import pprint
+
+global config
+global log
+
+def merge(x, y):
+    """
+    store a copy of x, but overwrite with y's values where applicable
+    """
+    merged = dict(x, **y)
+
+    xkeys = x.keys()
+
+    # if the value of merged[key] was overwritten with y[key]'s value
+    # then we need to put back any missing x[key] values
+    for key in xkeys:
+        # if this key is a dictionary, recurse
+        if isinstance(x[key], dict) and key in y:
+            merged[key] = merge(x[key], y[key])
+
+    return merged
+
+def priority(priority):
+    """
+    Convert a jira priority to a todoist priority
+    """
+    return {
+        'Lowest': 3,
+        'Low': 3,
+        'Medium': 2,
+        'High': 1,
+        'Highest': 1,
+    }.get(priority, 2)
+
+def create(api, name, url, project, priority=2):
+    """
+    Create a todoist task
+    """
+
+    if not project:
+        log.error("Project object is empty")
+
+    exists = False
+    items = todoist.managers.projects.ProjectsManager(api).get_data(project['id'])['items']
+    # log.debug(pprint(items))
+    item = None
+    for i in items:
+        # log.debug("Searching for {} in {}...".format(name.encode('utf-8'), i['content'].encode('utf-8')))
+        if unicode(name) in unicode(i['content']):
+            log.debug("Found existing task for '{}'".format(name))
+            item = todoist.managers.items.ItemsManager(api).get(i['id'])
+            exists = True
+    if not exists:
+        log.debug("Creating task in {}...".format(project['name']))
+        item = api.items.add("[{}]({})".format(name, url),
+                             project['id'])
+    if item:
+        log.debug("Updating task date and priority...")
+        item.update(date_string="today")
+        item.update(priority=priority)
+
+if __name__ == "__main__":
+    # Parse command line arguments
+    parser = argparse.ArgumentParser(
+        description='Process command line options.')
+    parser.add_argument(
+        '-d', '--debug', action='store_true', help='Enable debug logging')
+    parser.add_argument(
+        '-c', '--config', help='Specify a config file to use',
+        type=str, default=os.path.join(
+            os.path.dirname(os.path.realpath(__file__)), 'config.yaml'))
+    parser.add_argument(
+        '--issue', help='Issue number to pull from jira',
+        type=str)
+    parser.add_argument('--dry-run', action='store_true', help='Show what would happen instead of making changes. Use --debug with this.')
+    parser.add_argument('--version', action='version', version='1.0')
+    args = parser.parse_args()
+
+    # Setup logging options
+    global log
+    log_level = logging.DEBUG if args.debug else logging.INFO
+    log = logging.getLogger(os.path.basename(__file__))
+    log.setLevel(log_level)
+    formatter = logging.Formatter('%(asctime)s:%(name)s:%(levelname)s'
+                                  ':%(funcName)s(%(lineno)i):%(message)s')
+
+    # Console Logging
+    ch = logging.StreamHandler()
+    ch.setLevel(log_level)
+    ch.setFormatter(formatter)
+    log.addHandler(ch)
+
+    # File Logging
+    fh = logging.FileHandler(os.path.join(os.path.dirname(
+        os.path.realpath(__file__)),
+        os.path.basename(__file__) + '.log'))
+    fh.setLevel(log_level)
+    fh.setFormatter(formatter)
+    log.addHandler(fh)
+
+    log.debug("Arguments: {}".format(str(args)))
+
+    log.info("Initializing...")
+
+    log.debug("Loading configuration...")
+    # Load Config
+    global config
+    defaults = {
+        "jira": {
+            "username": "",
+            "password": "",
+            "url": "",
+        },
+        "todoist": {
+            "token": "",
+            "project": "",
+        },
+    }
+    if not os.path.isfile(args.config):
+        log.debug("Config file does not exist, creating a default config...")
+        config = defaults
+    with open(args.config, 'r') as stream:
+        log.debug("Loading config file %s" % args.config)
+        config = yaml.load(stream)
+        log.debug("YAML parsed as {}".format(str(config)))
+        if config:
+            # config contains items
+            config = merge(defaults, config)
+            log.debug("Config merged with defaults")
+        else:
+            # config is empty, just use defaults
+            config = defaults
+            log.debug("Config file was empty, loaded config from defaults")
+
+    log.debug("Config loaded as:\n%s, saving this to disk" % str(config))
+    with open(args.config, 'w') as outfile:
+        outfile.write(yaml.dump(config, default_flow_style=False))
+    log.debug("Config loaded as:\n%s" % str(config))
+
+
+    log.debug("Initializing Jira API...")
+    options = {
+        'server': config['jira']['url'],
+    }
+    jiraAPI = None
+    try:
+        jiraAPI = jira.JIRA(options, basic_auth=(
+            config['jira']['username'],
+            config['jira']['password']))
+    except jira.exceptions.JIRAError:
+        pass
+
+    log.debug("Initializing Todoist API...")
+    todoistAPI = todoist.TodoistAPI(config['todoist']['token'])
+    todoistAPI.reset_state()
+    project = None
+    for proj in todoistAPI.sync()['projects']:
+        if proj['name'].lower() == config['todoist']['project'].lower():
+            project = proj
+            break
+
+    log.info("Initialization complete")
+
+    log.info("Loading issues from JIRA...")
+    if jiraAPI:
+        if not jiraAPI.search_issues("assignee={}".format(
+                config['jira']['username'])):
+            log.error("Error verifying Jira API connection")
+            sys.exit(2)
+
+        if args.issue:
+            issue = api.issue(args.issue)
+
+            if issue:
+                log.debug("Found issue {}, processing...".format(issue.key))
+                create_card(
+                    name="{}: {}".format(
+                        issue.key,
+                        issue.fields.summary),
+                    description=issue.fields.description,
+                    link="{}/browse/{}".format(config['jira']['url'], issue.key))
+            else:
+                log.error("Issue {} not found".format(args.issue))
+        else:
+            # Get all assigned issues
+            issues = jiraAPI.search_issues("assignee = currentUser() AND resolution = Unresolved")
+            log.info("Creating todoist tickets for assigned JIRA issues...")
+            for issue in issues:
+                log.debug("Processing issue {}...".format(issue.key))
+                create(api=todoistAPI,
+                       name="[{}] {} - {}".format(issue.key, issue.fields.summary, "parlette.us"),
+                       url="{}/browse/{}".format(config['jira']['url'], issue.key),
+                       project=project,
+                       priority=priority(issue.fields.priority))
+    else:
+        log.error("JIRA could not be contacted, no issue data will be loaded")
+    if args.dry_run:
+        log.info("Dry run enabled, no changes will be made")
+    else:
+        log.info("Committing changes to todoist...")
+        todoistAPI.commit()
