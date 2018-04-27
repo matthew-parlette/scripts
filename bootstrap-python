@@ -11,6 +11,7 @@ function show_help {
     echo "Usage: $0 [options] [filename]"
     echo "Options:"
     echo -e "-h\tShow this help"
+    echo -e "-p\tUse the plugin framework"
 }
 
 # Ask a question, defaults to yes
