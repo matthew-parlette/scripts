@@ -1,0 +1,124 @@
+#!/bin/bash
+
+# Configuration
+###############
+
+
+# Functions
+###########
+function show_help {
+    echo "Help Text"
+    echo "Usage: $0 [options]"
+    echo "Options:"
+    echo -e "-h\tShow this help"
+}
+
+# Ask a question, defaults to yes
+function yes_no_question () {
+    read -r -p "$1 [Y/n] " response
+    response=${response,,}
+    if [[ "$response" =~ ^(yes|y|)$ ]]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+# Ask a question, defaults to no
+function no_yes_question () {
+    read -r -p "$1 [y/N] " response
+    response=${response,,}
+    if [[ "$response" =~ ^(no|n|)$ ]]; then
+        return 1
+    else
+        return 0
+    fi
+}
+
+# Useful Variables
+##################
+# Directory containing this script
+#  (no matter where it is called from)
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
+  DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+  SOURCE="$(readlink "$SOURCE")"
+  [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
+done
+script_dir="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+
+# Script
+########
+dest_path="$1"
+
+# Read Command Line Arguments
+while getopts "h" opt; do
+    case "$opt" in
+        h)
+            show_help
+            exit 0
+            ;;
+  esac
+done
+
+# Verify Parameters
+if [ -z "$dest_path" ]
+then
+    echo -e "Path for new script:"
+    read dest_path
+fi
+
+if [ -d "$dest_path" ]
+then
+    echo -e "Path already exists, exiting"
+    exit 1
+fi
+
+if yes_no_question "This will copy the Matrix-NEB bot template into $dest_path, continue?"
+then
+    eval "mkdir $dest_path"
+    # Clone Matrix-NEB repo
+    if [ -d "/tmp/matrix-bot" ]
+    then
+        rm -rf /tmp/matrix-bot
+    fi
+    echo "Cloning Matrix-NEB repo..."
+    eval "git clone https://github.com/matrix-org/Matrix-NEB.git /tmp/matrix-bot"
+
+    # Copy files to destination path
+    echo "Copying files to $dest_path..."
+    eval "cp -r /tmp/matrix-bot/* $dest_path"
+
+    # Initilize the repo
+    echo "Initializing repository..."
+    eval "git init $dest_path"
+
+    # First commit (easier to do from the dest_path dir)
+    echo "Creating initial commit..."
+    exec_dir=`pwd`
+    eval "cd $dest_path"
+    eval "git add ."
+    eval "git commit -am 'Initial commit copied from Matrix-NEB'"
+    eval "cd $exec_dir"
+
+    # Remove changelog
+    # echo "Removing Changelog..."
+    # eval "cd $dest_path"
+    # eval "git rm CHANGELOG.rst"
+    # eval "git commit -am 'Remove changelog'"
+    # eval "cd $exec_dir"
+
+    # shortname=$(echo $dest_path| cut -d'-' -f 1)
+    # if yes_no_question "Would you like to replace 'template' => '$shortname'?"
+    # then
+    #   echo "Replacing all instances of 'template' with '$shortname'..."
+    #   eval "cd $dest_path"
+    #   eval "git mv template $shortname"
+    #   eval "git commit -m 'Renaming template directory'"
+    #   eval "find . -type f -exec sed -i "s/template/$shortname/g" {} \;"
+    #   eval "git commit -am 'Replacing template with $shortname in all files'"
+    #   eval "cd $exec_dir"
+    # fi
+else
+    echo "Cancelling..."
+fi
