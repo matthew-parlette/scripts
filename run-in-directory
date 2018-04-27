@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# Run a command in a specified directory
+# From https://stackoverflow.com/a/35422021
+
+newcwd=$1
+shift
+cd $newcwd && $@
